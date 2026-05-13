@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <title>Каталог — GULREZ</title>
+  <link rel="icon" href="/icons/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c97b6e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/catalog.css">
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="ch">
+  <a href="/" class="ch-logo">
+    <img src="/images/sino.png" alt="GULREZ" class="ch-logo-img">
+    <span class="ch-logo-text">GULREZ</span>
+  </a>
+  <div class="ch-actions">
+    <button class="ch-btn" id="chSearchBtn" onclick="toggleSearch()" aria-label="Поиск">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="ch-btn" onclick="location.href='/?openCart=1'" aria-label="Корзина">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="ch-cart-badge" id="chCartBadge" style="display:none">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ══ SEARCH ══ -->
+<div class="cs-wrap" id="csWrap">
+  <div class="cs-inner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" class="cs-input" id="csInput" placeholder="Поиск букетов…" oninput="catSearch(this.value)" autocomplete="off">
+    <button class="cs-clear" onclick="clearSearch()">✕</button>
+  </div>
+</div>
+
+<!-- ══ FILTER TABS ══ -->
+<div class="cf-wrap" id="cfWrap">
+  <button class="cf-tab active" data-tag="all" onclick="catFilter(this)">Все</button>
+  <button class="cf-tab" data-tag="Хит" onclick="catFilter(this)">Хит</button>
+  <button class="cf-tab" data-tag="Топ" onclick="catFilter(this)">Топ</button>
+  <button class="cf-tab" data-tag="Premium" onclick="catFilter(this)">Premium</button>
+  <button class="cf-tab" data-tag="Новинка" onclick="catFilter(this)">Новинка</button>
+  <button class="cf-tab" data-tag="Свежий" onclick="catFilter(this)">Свежий</button>
+  <button class="cf-tab" data-tag="Лето" onclick="catFilter(this)">Лето</button>
+</div>
+
+<!-- ══ COUNT ══ -->
+<div class="cat-count-bar"><span id="catCount">Загрузка…</span></div>
+
+<!-- ══ GRID ══ -->
+<main class="cat-main">
+  <div class="cat-grid" id="catGrid">
+    <div class="cat-skeleton"></div>
+    <div class="cat-skeleton"></div>
+    <div class="cat-skeleton"></div>
+    <div class="cat-skeleton"></div>
+    <div class="cat-skeleton"></div>
+    <div class="cat-skeleton"></div>
+  </div>
+</main>
+
+<!-- ══ TOAST ══ -->
+<div class="cat-toast" id="catToast"></div>
+
+<!-- ══ BOTTOM NAV ══ -->
+<nav class="app-bnav">
+  <button class="app-bnav-item" onclick="location.href='/'" aria-label="Главная">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </span>
+  </button>
+  <button class="app-bnav-item active" onclick="location.href='/catalog'" aria-label="Каталог">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+    </span>
+  </button>
+  <button class="app-bnav-item app-bnav-center-item" onclick="location.href='/'" aria-label="GULREZ">
+    <span class="app-bnav-center-btn">
+      <img src="/images/sino.png" alt="GULREZ">
+    </span>
+  </button>
+  <button class="app-bnav-item" onclick="location.href='/?openWishlist=1'" aria-label="Избранное">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </span>
+  </button>
+  <button class="app-bnav-item" onclick="location.href='/user'" aria-label="Профиль">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </span>
+  </button>
+</nav>
+
+<script>
+'use strict';
+
+let allProducts = [];
+let activeTag   = 'all';
+let searchQuery = '';
+let searchOpen  = false;
+
+/* ── LocalStorage cart ── */
+function lsCart() {
+  try { return JSON.parse(localStorage.getItem('gulrez_ls_cart') || '[]'); } catch { return []; }
+}
+function lsSaveCart(a) { localStorage.setItem('gulrez_ls_cart', JSON.stringify(a)); }
+
+function syncBadge() {
+  const n = lsCart().reduce((s, c) => s + (c.qty || 1), 0);
+  const b = document.getElementById('chCartBadge');
+  if (!b) return;
+  b.textContent = n;
+  b.style.display = n > 0 ? 'flex' : 'none';
+}
+
+function catAddToCart(id, name, btn) {
+  const cart = lsCart();
+  const ex = cart.find(c => c.id === id);
+  if (ex) ex.qty = (ex.qty || 1) + 1;
+  else cart.push({ id, qty: 1 });
+  lsSaveCart(cart);
+  syncBadge();
+  btn.classList.add('cat-btn-added');
+  setTimeout(() => btn.classList.remove('cat-btn-added'), 800);
+  showToast('«' + name + '» в корзине 🛒');
+}
+
+/* ── Favorites (API for logged-in, localStorage for guests) ── */
+let _catLoggedIn = false;
+let _catFavIds = new Set();
+
+function lsFavs() {
+  try { return new Set(JSON.parse(localStorage.getItem('gulrez_ls_favs') || '[]')); } catch { return new Set(); }
+}
+function lsSaveFavs(s) { localStorage.setItem('gulrez_ls_favs', JSON.stringify([...s])); }
+
+async function catToggleHeart(btn, id) {
+  if (_catLoggedIn) {
+    try {
+      const r = await fetch('/api/favorites/' + id, { method: 'POST', credentials: 'same-origin' });
+      const d = await r.json();
+      if (d.error) { showToast(d.error); return; }
+      if (d.liked) _catFavIds.add(id); else _catFavIds.delete(id);
+      btn.classList.toggle('liked', d.liked);
+    } catch { showToast('Ошибка соединения'); }
+  } else {
+    const favs = lsFavs();
+    if (favs.has(id)) favs.delete(id); else favs.add(id);
+    lsSaveFavs(favs);
+    btn.classList.toggle('liked', favs.has(id));
+  }
+}
+
+/* ── Open product page ── */
+function catOpenProduct(id) { location.href = '/product/' + id; }
+
+/* ── Filter ── */
+function catFilter(btn) {
+  document.querySelectorAll('.cf-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeTag = btn.dataset.tag;
+  render();
+}
+
+/* ── Search ── */
+function catSearch(q) { searchQuery = q.toLowerCase().trim(); render(); }
+function clearSearch() {
+  const inp = document.getElementById('csInput');
+  if (inp) inp.value = '';
+  searchQuery = '';
+  render();
+}
+function toggleSearch() {
+  searchOpen = !searchOpen;
+  document.getElementById('csWrap').classList.toggle('open', searchOpen);
+  if (searchOpen) document.getElementById('csInput').focus();
+  else clearSearch();
+}
+
+/* ── Escape HTML ── */
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Build card HTML ── */
+function buildCard(p, favs) {
+  const disc  = p.discount > 0;
+  const final = disc ? Math.round(p.price * (1 - p.discount / 100)) : p.price;
+  const img   = (p.images && p.images[0]) || '/images/logo.png';
+  const liked = favs.has(p.id);
+  const inStock = p.status !== 0;
+
+  const discBadge = disc ? `<span class="cc-disc">-${p.discount}%</span>` : '';
+  const tagBadge  = p.tag
+    ? `<span class="cc-tag" style="background:${esc(p.tagBg || '#c17b7b')}">+${esc(p.tag.toUpperCase())}</span>`
+    : '';
+
+  const priceHtml = disc
+    ? `<span class="cc-price-old">${p.price}</span><span class="cc-price">${final}</span><span class="cc-cur"> TJS</span>`
+    : `<span class="cc-price">${p.price}</span><span class="cc-cur"> TJS</span>`;
+
+  const actionHtml = inStock
+    ? `<button class="cc-add" onclick="event.stopPropagation();catAddToCart(${p.id},${JSON.stringify(p.title)},this)" aria-label="В корзину">
+         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+       </button>`
+    : `<div class="cc-nostock">НЕТ В НАЛИЧИИ</div>`;
+
+  return `
+  <article class="cat-card" onclick="catOpenProduct(${p.id})">
+    <div class="cat-img-wrap">
+      <img src="${esc(img)}" alt="${esc(p.title)}" class="cat-img" loading="lazy" onerror="this.src='/images/logo.png'">
+      <div class="cc-badges-tl">${discBadge}${tagBadge}</div>
+      <button class="cc-heart${liked ? ' liked' : ''}" onclick="event.stopPropagation();catToggleHeart(this,${p.id})" aria-label="В избранное">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+      ${actionHtml}
+    </div>
+    <div class="cat-card-body">
+      ${p.color ? `<div class="cc-color">${esc(p.color.toUpperCase())}</div>` : ''}
+      <div class="cc-name">${esc(p.title)}</div>
+      <div class="cc-footer">
+        <div class="cc-prices">${priceHtml}</div>
+        ${p.likes ? `<div class="cc-likes">★ ${p.likes}</div>` : ''}
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ── Render filtered list ── */
+function render() {
+  let list = allProducts;
+  if (activeTag !== 'all') list = list.filter(p => p.tag === activeTag);
+  if (searchQuery) list = list.filter(p =>
+    (p.title       || '').toLowerCase().includes(searchQuery) ||
+    (p.desc        || '').toLowerCase().includes(searchQuery) ||
+    (p.color       || '').toLowerCase().includes(searchQuery) ||
+    (p.tag         || '').toLowerCase().includes(searchQuery) ||
+    (p.composition || '').toLowerCase().includes(searchQuery)
+  );
+
+  const countEl = document.getElementById('catCount');
+  if (countEl) countEl.textContent = list.length + ' товаров';
+
+  const grid = document.getElementById('catGrid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="cat-empty">Ничего не найдено 🌸</div>';
+    return;
+  }
+  const favs = _catLoggedIn ? _catFavIds : lsFavs();
+  grid.innerHTML = list.map(p => buildCard(p, favs)).join('');
+}
+
+/* ── Toast ── */
+function showToast(msg) {
+  const t = document.getElementById('catToast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('visible'), 2200);
+}
+
+/* ── Init ── */
+async function init() {
+  syncBadge();
+  try {
+    const [meRes, prodsRes] = await Promise.all([
+      fetch('/api/me', { credentials: 'same-origin' }),
+      fetch('/api/products')
+    ]);
+    const me = await meRes.json();
+    _catLoggedIn = !!me.loggedIn;
+
+    const data = await prodsRes.json();
+    allProducts = data;
+
+    if (_catLoggedIn) {
+      try {
+        const favRes = await fetch('/api/favorites', { credentials: 'same-origin' });
+        const favData = await favRes.json();
+        _catFavIds = new Set(favData.ids || []);
+      } catch { _catFavIds = new Set(); }
+    }
+
+    render();
+  } catch {
+    document.getElementById('catGrid').innerHTML =
+      '<div class="cat-empty">Ошибка загрузки. Попробуйте позже.</div>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

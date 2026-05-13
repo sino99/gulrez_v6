@@ -1,0 +1,1570 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GULREZ — Цветочный магазин</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Marck+Script&family=Philosopher:ital,wght@1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icons/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#c97b6e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+/* ── PWA Prompt (bottom sheet) ── */
+.pwa-prompt-overlay{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:9998;pointer-events:none;transition:background .35s}
+.pwa-prompt-overlay.active{background:rgba(0,0,0,0.35);pointer-events:all}
+.pwa-prompt{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 36px;box-shadow:0 -8px 40px rgba(0,0,0,0.18);transform:translateY(110%);transition:transform .4s cubic-bezier(.32,1,.23,1);max-width:480px;margin:0 auto}
+.pwa-prompt.open{transform:translateY(0)}
+.pwa-prompt-handle{width:40px;height:4px;background:#e0d5d0;border-radius:2px;margin:0 auto 20px}
+.pwa-prompt-logo{width:64px;height:64px;border-radius:18px;margin:0 auto 12px;overflow:hidden;box-shadow:0 4px 16px rgba(201,123,110,0.3)}
+.pwa-prompt-logo img{width:100%;height:100%;object-fit:cover}
+.pwa-prompt-title{text-align:center;font-size:20px;font-weight:700;color:#3a2a20;margin-bottom:4px}
+.pwa-prompt-sub{text-align:center;font-size:14px;color:#9a7a70;margin-bottom:22px}
+.pwa-prompt-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.pwa-prompt-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px 20px;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pwa-prompt-btn:hover{opacity:.88}
+.pwa-prompt-btn--install{background:linear-gradient(135deg,#c97b6e,#b8604e);color:#fff}
+.pwa-prompt-btn--notif{background:#f3ede9;color:#7a4a3a}
+.pwa-prompt-btn--done{background:#e8f5e9;color:#388e3c;cursor:default;opacity:.8}
+.pwa-prompt-skip{display:block;width:100%;padding:10px;border:none;background:none;font-size:14px;color:#b09080;cursor:pointer;text-align:center}
+.pwa-prompt-skip:hover{color:#7a4a3a}
+/* small helper classes used by pwa.js globally */
+.pwa-install-btn{display:none}
+.pwa-notif-btn{display:none}
+.pwa-notif-btn--on{background:#e8f5e9;color:#388e3c;cursor:default}
+</style>
+</head>
+<body>
+
+<!-- ─── MOBILE NAV DROPDOWN ─── -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-items">
+    <a href="#" onclick="closeMobileNav()">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+      <span data-i18n="m-nav-home">Главная</span>
+    </a>
+    <a href="#catalog" onclick="closeMobileNav()">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+      <span data-i18n="m-nav-catalog">Каталог</span>
+    </a>
+    <a href="#about" onclick="closeMobileNav()">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+      <span data-i18n="m-nav-about">О нас</span>
+    </a>
+    <a href="#reviews" onclick="closeMobileNav()">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+      <span>Отзывы</span>
+    </a>
+    <a href="#footer" onclick="closeMobileNav()">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.69 19a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 3.1 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72c.13 1 .37 1.97.7 2.91a2 2 0 0 1-.45 2.11L9.09 9.91a16 16 0 0 0 6 6l1.17-1.17a2 2 0 0 1 2.11-.45c.94.33 1.91.57 2.91.7A2 2 0 0 1 23 16.92z"/></svg></span>
+      <span data-i18n="m-nav-contacts">Контакты</span>
+    </a>
+  </div>
+
+  <div class="mobile-nav-divider"></div>
+
+  <div class="mobile-nav-bottom">
+    <div class="lang-select-menu">
+      <button class="lang-btn active" onclick="setLang('RU',this)">RU</button>
+      <button class="lang-btn" onclick="setLang('TJ',this)">TJ</button>
+      <button class="lang-btn" onclick="setLang('EN',this)">EN</button>
+    </div>
+    <div id="mobileAuthBtnWrap">
+      <a class="mobile-login-btn" id="mobileAuthBtn" href="login.html" data-i18n="m-nav-login">Войти</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TICKER ─── -->
+<div class="ticker-bar">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span class="ticker-icon"></span> Свежие букеты</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> 08:00 — 22:00</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Красиво</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Аккуратно</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Вовремя</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Пенджикент, Таджикистан</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Доставка — 10 TJS</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Свежие букеты</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> 08:00 — 22:00</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Красиво</span>
+    <span class="ticker-dot"></span>    
+    <span class="ticker-item"><span class="ticker-icon"></span> Аккуратно</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Вовремя</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span class="ticker-icon"></span> Пенджикент, Таджикистан</span>
+    <span class="ticker-dot"></span>
+     <span class="ticker-item"><span class="ticker-icon"></span> Доставка — 10 TJS</span>
+    <span class="ticker-dot"></span>
+  </div>
+</div>
+
+<!-- ─── HEADER ─── -->
+<header id="header">
+  <a href="#" class="logo">
+    <img src="images/logo.png" alt="Gulrez — Цветочный магазин">
+  </a>
+
+  <nav>
+    <a href="#" data-i18n="nav-home">Главная</a>
+    <a href="#catalog" data-i18n="nav-catalog">Каталог</a>
+    <a href="#about" data-i18n="nav-about">О нас</a>
+    <a href="#reviews">Отзывы</a>
+    <a href="#footer" data-i18n="nav-contacts">Контакты</a>
+  </nav>
+
+  <div class="header-actions">
+    <!-- Search -->
+    <button class="icon-btn" title="Поиск" onclick="openSearch()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </button>
+
+    <!-- Favourite -->
+    <button class="icon-btn" id="wishlistBtn" title="Избранное" onclick="openWishlist()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      <span class="wishlist-badge" id="wishlistBadge" style="display:none">0</span>
+    </button>
+
+    <!-- Cart -->
+    <button class="icon-btn" title="Корзина" onclick="openCart()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+
+    <div id="authBtnWrap">
+      <a class="btn-login" id="authBtn" data-i18n="nav-login" href="login.html">Войти</a>
+    </div>
+
+    <button class="burger" onclick="openMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ─── HERO ─── -->
+<section class="hero" id="hero">
+  <div class="slides-wrapper">
+    <div class="slide slide-1 active"></div>
+    <div class="slide slide-2"></div>
+    <div class="slide slide-3"></div>
+    <div class="slide slide-4"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-content-top">
+      <h1 class="hero-quote visible" id="heroQuote">
+        Если любовь заставляет тебя расцветать — не сомневайся, это настоящее
+      </h1>
+    </div>
+    <div class="hero-cta visible">
+      <a href="#catalog" class="btn-primary" id="heroCta" data-i18n="hero-cta">Смотреть каталог</a>
+    </div>
+  </div>
+
+  <div class="slide-dots" id="slideDots">
+    <button class="dot active" onclick="goToSlide(0)"></button>
+    <button class="dot" onclick="goToSlide(1)"></button>
+    <button class="dot" onclick="goToSlide(2)"></button>
+    <button class="dot" onclick="goToSlide(3)"></button>
+  </div>
+
+  <div class="scroll-hint" data-i18n="hero-scroll">Прокрути</div>
+</section>
+
+<!-- ─── CATALOG ─── -->
+<section class="catalog" id="catalog">
+  <div class="section-header fade-up">
+    <div>
+      <span class="section-label" data-i18n="catalog-label">Каталог</span>
+      <h2 class="section-title" data-i18n="catalog-title">Популярные букеты</h2>
+      <p class="section-desc" data-i18n="catalog-desc">Свежие цветы каждый день — от нежных пастелей до ярких акцентов для любого повода.</p>
+    </div>
+
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <!-- Products rendered dynamically via loadCatalog() in script.js -->
+    <div class="catalog-loading" id="catalogLoading"><div class="catalog-spinner"></div></div>
+  </div>
+</section>
+
+<!-- ─── ABOUT ─── -->
+<section class="about" id="about">
+  <div class="about-inner">
+
+    <div class="about-left fade-up">
+      <span class="section-label" data-i18n="about-label">О нас</span>
+      <h2 class="section-title" data-i18n="about-title">Живая красота — каждый день</h2>
+      <div class="about-text">
+        <p data-i18n="about-text-0">Мы верим, что цветы — это не просто подарок, а язык самых глубоких чувств. Каждый букет создаётся руками наших флористов с трепетом и вниманием к деталям.</p>
+        <p data-i18n="about-text-1">Работаем только со свежими цветами — поставки напрямую с лучших ферм. Гарантируем свежесть каждого букета.</p>
+        <p data-i18n="about-text-2">Студия Gulrez в Пенджикенте. Пишите в Direct или WhatsApp — ответим быстро!</p>
+      </div>
+      <div class="about-stat-row">
+        <div class="about-stat">
+          <span>5+</span>
+          <label data-i18n="stat-1-label">лет в деле</label>
+        </div>
+        <div class="about-stat">
+          <span>2400</span>
+          <label data-i18n="stat-2-label">счастливых клиентов</label>
+        </div>
+        <div class="about-stat">
+          <span>100%</span>
+          <label data-i18n="stat-3-label">свежесть</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-gallery fade-up" style="transition-delay:0.15s">
+      <div class="about-img">
+        <img src="images/30.jpg" alt="Флористическая студия" loading="lazy">
+      </div>
+      <div class="about-img">
+        <img src="images/31.jpg" alt="Работа флориста" loading="lazy">
+      </div>
+      <div class="about-img">
+        <img src="images/32.jpg" alt="Цветочный магазин" loading="lazy">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── DELIVERY & PAYMENT ─── -->
+<section class="delivery-section" id="delivery">
+
+  <span class="delivery-eyebrow" data-i18n="delivery-eyebrow">Доставка и оплата</span>
+  <h2 class="delivery-title" data-i18n="delivery-title">Как заказать и оплатить</h2>
+  <div class="delivery-title-line"></div>
+  <p class="delivery-subtitle" data-i18n="delivery-subtitle">Быстрая доставка по Пенджикенту и удобные способы оплаты для вашего комфорта.</p>
+
+  <div class="delivery-cards">
+
+    <!-- Delivery card -->
+    <div class="delivery-card fade-up">
+      <div class="delivery-card-title" data-i18n="delivery-card-title">Доставка</div>
+      <span class="delivery-card-sub" data-i18n="delivery-card-sub">Ежедневно с 08:00 до 22:00</span>
+      <ul class="delivery-list">
+        <li><span class="delivery-check">✓</span> <span data-i18n="delivery-li-0">Доставка по Пенджикенту — 10 TJS</span></li>
+        <li><span class="delivery-check">✓</span> <span data-i18n="delivery-li-1">Доставка в день заказа</span></li>
+        <li><span class="delivery-check">✓</span> <span data-i18n="delivery-li-2">Заказы принимаются по телефону или через соцсети</span></li>
+        <li><span class="delivery-check">✓</span> <span data-i18n="delivery-li-3">Самовывоз из магазина — бесплатно</span></li>
+      </ul>
+      <div class="delivery-card-footer">
+        <a href="https://wa.me/992000000000" class="btn-delivery" target="_blank" data-i18n="delivery-btn">Заказать доставку</a>
+        <span class="delivery-stamp" data-i18n="delivery-stamp">Быстро и удобно</span>
+      </div>
+    </div>
+
+    <!-- Payment card -->
+    <div class="delivery-card fade-up" style="transition-delay:0.12s">
+      <div class="delivery-card-title" data-i18n="payment-card-title">Оплата</div>
+      <span class="delivery-card-sub" data-i18n="payment-card-sub">Удобные способы оплаты</span>
+      <ul class="delivery-list">
+        <li><span class="delivery-check">✓</span> <span data-i18n="payment-li-0">Оплата через Алиф</span></li>
+        <li><span class="delivery-check">✓</span> <span data-i18n="payment-li-1">Оплата через Душанбе Сити</span></li>
+        <li><span class="delivery-check">✓</span> <span data-i18n="payment-li-2">Наличными при получении</span></li>
+        <li><span class="delivery-check">✓</span> <span data-i18n="payment-li-3">Перевод на карту</span></li>
+      </ul>
+      <div class="delivery-card-footer">
+        <a href="https://wa.me/992000000000" class="btn-delivery" target="_blank" data-i18n="payment-btn">Написать нам</a>
+        <span class="delivery-stamp" data-i18n="payment-stamp">Всегда на связи</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── REVIEWS ─── -->
+<section class="reviews-section" id="reviews">
+
+  <!-- Header -->
+  <div class="reviews-header fade-up">
+    <div class="reviews-header-left">
+      <span class="section-label">Отзывы</span>
+      <h2 class="section-title">Что говорят наши клиенты</h2>
+      <p class="section-desc">Честные впечатления тех, кто уже получил букет от Gulrez</p>
+    </div>
+    <!-- Overall rating -->
+    <div class="reviews-overall fade-up" id="reviewsOverall" style="transition-delay:0.1s">
+      <div class="reviews-overall-top">
+        <div class="reviews-overall-score" id="overallScore">—</div>
+        <div class="reviews-overall-right">
+          <div class="reviews-overall-stars" id="overallStars"></div>
+          <div class="reviews-overall-count" id="overallCount">0 отзывов</div>
+        </div>
+      </div>
+      <div class="reviews-overall-divider"></div>
+      <!-- Rating breakdown bars -->
+      <div class="reviews-breakdown" id="reviewsBreakdown"></div>
+    </div>
+  </div>
+
+  <!-- Write review block -->
+  <div class="reviews-write-wrap fade-up" id="reviewsWriteWrap" style="transition-delay:0.15s">
+    <!-- NOT logged in -->
+    <div class="reviews-login-prompt" id="reviewLoginPrompt">
+      <div class="reviews-login-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" width="28" height="28"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <p>Войдите в аккаунт, чтобы оставить отзыв</p>
+      <a href="login.html" class="reviews-login-btn">Войти / Зарегистрироваться</a>
+    </div>
+    <!-- Logged in -->
+    <div class="reviews-form-card" id="reviewFormCard" style="display:none">
+      <div class="reviews-form-header">
+        <div class="reviews-form-avatar" id="reviewFormAvatar">U</div>
+        <div>
+          <div class="reviews-form-username" id="reviewFormUsername">Пользователь</div>
+          <div class="reviews-form-sublabel">Ваш отзыв</div>
+        </div>
+      </div>
+      <!-- Star picker -->
+      <div class="star-picker" id="starPicker" role="group" aria-label="Оценка">
+        <button class="star-pick-btn" data-v="1" onclick="pickStar(1)" aria-label="1 звезда">★</button>
+        <button class="star-pick-btn" data-v="2" onclick="pickStar(2)" aria-label="2 звезды">★</button>
+        <button class="star-pick-btn" data-v="3" onclick="pickStar(3)" aria-label="3 звезды">★</button>
+        <button class="star-pick-btn" data-v="4" onclick="pickStar(4)" aria-label="4 звезды">★</button>
+        <button class="star-pick-btn" data-v="5" onclick="pickStar(5)" aria-label="5 звёзд">★</button>
+        <span class="star-pick-label" id="starPickLabel">Выберите оценку</span>
+      </div>
+      <textarea class="review-textarea" id="reviewText"
+        placeholder="Расскажите о вашем букете — это поможет другим сделать выбор…"
+        maxlength="800" oninput="reviewCharCount(this)"></textarea>
+      <!-- Photo previews -->
+      <div class="rv-photo-previews" id="rvPhotoPreviews"></div>
+      <div class="review-form-footer">
+        <span class="review-char-count" id="reviewCharCount">0 / 800</span>
+        <label class="rv-photo-add-btn" title="Добавить фото (до 3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <input type="file" id="rvPhotoInput" accept="image/*" multiple style="display:none" onchange="rvAddPhotos(this)">
+        </label>
+        <button class="review-submit-btn" id="reviewSubmitBtn" onclick="submitReview()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="15" height="15"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Опубликовать
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="reviews-controls fade-up" id="reviewsControls" style="transition-delay:0.2s;display:none">
+    <div class="reviews-count-pill" id="reviewsCountPill">0 отзывов</div>
+    <div class="reviews-sort-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="13" height="13"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+      <select id="reviewsSort" onchange="sortReviews(this.value)">
+        <option value="newest">Сначала новые</option>
+        <option value="top_rated">Высокая оценка</option>
+        <option value="most_liked">Больше лайков</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Reviews list -->
+  <div class="reviews-list" id="reviewsList">
+    <div class="reviews-loading" id="reviewsLoading">
+      <div class="reviews-spinner"></div>
+      <span>Загружаем отзывы…</span>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="reviews-empty" id="reviewsEmpty" style="display:none">
+    <div class="reviews-empty-icon">🌸</div>
+    <p>Пока нет отзывов — будьте первым!</p>
+  </div>
+
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="faq-section" id="faq">
+  <div class="faq-inner">
+    <div class="faq-header fade-up">
+      <span class="section-label">FAQ</span>
+      <h2 class="faq-title">Часто задаваемые<br>вопросы</h2>
+      <p class="faq-subtitle">Всё что нужно знать о заказе, доставке и уходе за цветами</p>
+    </div>
+
+    <div class="faq-list fade-up" id="faqList">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">
+          <span class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
+          <span class="faq-q-text">Как оформить и оплатить заказ?</span>
+          <span class="faq-q-arrow">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <p>Оформить заказ можно тремя способами:</p>
+            <ol>
+              <li><b>На сайте</b> — выберите букет, нажмите «В корзину», укажите данные и оформите заказ.</li>
+              <li><b>Через WhatsApp</b> — напишите нам, и мы поможем выбрать букет и оформим заказ вместе.</li>
+              <li><b>В личном кабинете</b> — напишите нам в чате по вашему заказу после оформления.</li>
+            </ol>
+            <p>Оплата принимается <b>наличными при получении</b> или <b>переводом на карту</b> до доставки.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">
+          <span class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+          <span class="faq-q-text">Сколько стоит доставка и как быстро привезут?</span>
+          <span class="faq-q-arrow">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <p>Доставка по городу — <b>10 сомони</b>. Курьер привезёт букет <b>в течение 50–90 минут</b> после подтверждения заказа.</p>
+            <ul>
+              <li>Курьер позвонит за 10–15 минут до приезда.</li>
+              <li>Доставка работает <b>ежедневно с 08:00 до 21:00</b>.</li>
+              <li>Срочная доставка за 30 минут — уточняйте наличие по WhatsApp.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">
+          <span class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M12 22V12"/><path d="M12 12C12 8 8 5 4 6c0 4 3 7 8 6"/><path d="M12 12c0-4 4-7 8-6 0 4-3 7-8 6"/><path d="M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span>
+          <span class="faq-q-text">Как ухаживать за букетом, чтобы он дольше простоял?</span>
+          <span class="faq-q-arrow">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <p>Простые правила, которые продлят жизнь букета <b>до 10–14 дней</b>:</p>
+            <ul>
+              <li>🔪 Обрежьте стебли под углом 45° острым ножом (не ножницами).</li>
+              <li>💧 Меняйте воду в вазе <b>каждый день</b>, добавьте немного сахара.</li>
+              <li>❄️ Держите вдали от прямых солнечных лучей, батарей и сквозняков.</li>
+              <li>🌡️ Идеальная температура — 16–20°C.</li>
+              <li>🌿 Удаляйте листья, которые касаются воды.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">
+          <span class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span class="faq-q-text">За сколько дней нужно делать заказ?</span>
+          <span class="faq-q-arrow">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <p>Мы стараемся выполнять заказы <b>день в день</b> — просто напишите нам!</p>
+            <ul>
+              <li>Стандартный букет из наличия — <b>от 1–2 часов</b>.</li>
+              <li>Индивидуальный букет под заказ — лучше <b>за 1 день</b>.</li>
+              <li>Для свадьбы, корпоратива или крупного мероприятия — <b>за 3–7 дней</b>.</li>
+            </ul>
+            <p>На праздники (8 марта, Новый год) рекомендуем заказывать <b>заранее</b> — спрос очень высокий!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">
+          <span class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+          <span class="faq-q-text">Можно ли добавить открытку или особое пожелание?</span>
+          <span class="faq-q-arrow">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <p>Конечно! 🎁 Открытка с вашим текстом — <b>бесплатно</b>.</p>
+            <ul>
+              <li>Укажите текст пожелания при оформлении заказа или в WhatsApp.</li>
+              <li>Напишем красиво от руки на фирменной открытке GULREZ.</li>
+              <li>Также возможна <b>анонимная доставка</b> — получатель не узнает отправителя.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">
+          <span class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg></span>
+          <span class="faq-q-text">Что если букет не понравился или завял быстро?</span>
+          <span class="faq-q-arrow">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <p>Ваше удовольствие — наш приоритет. Если что-то пошло не так:</p>
+            <ul>
+              <li>Напишите нам в WhatsApp или чат <b>в течение 24 часов</b> с фото букета.</li>
+              <li>Мы разберёмся и либо <b>заменим букет</b>, либо вернём деньги.</li>
+              <li>Цветы — живой продукт, и мы несём за них полную ответственность.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">
+          <span class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></span>
+          <span class="faq-q-text">Можно ли заказать букет по своему дизайну?</span>
+          <span class="faq-q-arrow">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <p>Да, мы делаем <b>букеты на заказ</b> по вашему пожеланию!</p>
+            <ul>
+              <li>Отправьте нам фото-референс или опишите идею в WhatsApp.</li>
+              <li>Укажите предпочтения по цветам, цвету, стилю и бюджету.</li>
+              <li>Наш флорист подберёт лучшие цветы и создаст уникальный букет.</li>
+            </ul>
+            <p>Мы работаем с розами, пионами, лилиями, хризантемами, сухоцветами и экзотикой.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /faq-list -->
+
+
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer id="footer" style="margin-top: 64px;">
+<div class="footer-inner">
+
+  <div class="footer-grid-main">
+
+    <!-- Col 1: Brand -->
+    <div class="footer-brand">
+      <div class="footer-logo-wrap">
+        <img src="images/logo.png" alt="Gulrez">
+      </div>
+      <p class="footer-brand-desc" data-i18n="footer-brand-desc">Цветочная мастерская в Пенджикенте. Свежие букеты с доставкой — с заботой о каждой детали.</p>
+      <div class="footer-socials">
+        <!-- Instagram -->
+        <a href="https://instagram.com/gulrez" class="footer-social-btn" target="_blank" rel="noopener" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none">
+            <defs><linearGradient id="igF" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="50%" stop-color="#dc2743"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs>
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="url(#igF)" stroke-width="1.8"/>
+            <circle cx="12" cy="12" r="4" stroke="url(#igF)" stroke-width="1.8"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="url(#igF)"/>
+          </svg>
+        </a>
+        <!-- WhatsApp -->
+        <a href="https://wa.me/992000000000" class="footer-social-btn" target="_blank" rel="noopener" title="WhatsApp">
+          <svg viewBox="0 0 24 24" width="18" height="18">
+            <path d="M20.52 3.48A11.93 11.93 0 0 0 12 0C5.37 0 0 5.37 0 12c0 2.11.55 4.17 1.59 5.99L0 24l6.18-1.56A11.94 11.94 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.52z" fill="#25D366" opacity="0.2"/>
+            <path d="M17.47 14.38c-.28-.14-1.65-.81-1.91-.9-.26-.1-.44-.14-.63.14-.19.28-.73.9-.89 1.08-.16.18-.33.2-.61.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.12.28-.33.42-.49.14-.16.19-.28.28-.46.1-.18.05-.34-.02-.48-.07-.14-.63-1.52-.86-2.08-.23-.54-.46-.47-.63-.48H8.8c-.18 0-.47.07-.71.33-.24.26-.93.91-.93 2.22s.95 2.58 1.09 2.76c.14.18 1.88 2.87 4.55 4.02.64.27 1.13.44 1.52.56.64.2 1.22.17 1.68.1.51-.08 1.58-.65 1.8-1.27.22-.63.22-1.16.15-1.27-.06-.11-.25-.18-.53-.31z" fill="#25D366"/>
+            <path d="M12 2.04C6.49 2.04 2.04 6.49 2.04 12c0 1.96.54 3.8 1.48 5.38L2.04 22l4.74-1.46A9.92 9.92 0 0 0 12 21.96c5.51 0 9.96-4.45 9.96-9.96S17.51 2.04 12 2.04z" fill="none" stroke="#25D366" stroke-width="1.2"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Col 2: Quick links -->
+    <div class="footer-col">
+      <h4 data-i18n="footer-links-title">Быстрые ссылки</h4>
+      <ul>
+        <li><a href="#" class="footer-nav-link" data-i18n="footer-nav-home">Главная</a></li>
+        <li><a href="#catalog" class="footer-nav-link" data-i18n="footer-nav-catalog">Каталог</a></li>
+        <li><a href="#about" class="footer-nav-link" data-i18n="footer-nav-about">О нас</a></li>
+        <li><a href="#footer" class="footer-nav-link" data-i18n="footer-nav-contacts">Контакты</a></li>
+      </ul>
+    </div>
+
+    <!-- Col 3: Hours + Contacts -->
+    <div class="footer-col">
+      <h4 data-i18n="footer-hours-title">Часы работы</h4>
+      <ul>
+        <li>
+          <span class="open-dot"></span>
+          <span data-i18n="footer-hours-value">Ежедневно: 08:00 — 22:00</span>
+        </li>
+        <li>
+          <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <span data-i18n="footer-delivery">Доставка — 10 TJS</span>
+        </li>
+      </ul>
+
+      <h4 style="margin-top:24px;" data-i18n="footer-contacts-title">Контакты</h4>
+      <ul>
+        <li>
+          <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span data-i18n="footer-address">г. Пенджикент, Таджикистан</span>
+        </li>
+        <li>
+          <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.69 19a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 3.1 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72c.13 1 .37 1.97.7 2.91a2 2 0 0 1-.45 2.11L9.09 9.91a16 16 0 0 0 6 6l1.17-1.17a2 2 0 0 1 2.11-.45c.94.33 1.91.57 2.91.7A2 2 0 0 1 23 16.92z"/></svg>
+          <a href="tel:+992000000000">+992 ___ ___ ___</a>
+        </li>
+        <li>
+          <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <a href="https://wa.me/992000000000" target="_blank" rel="noopener">WhatsApp</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer-bottom">
+    <span data-i18n="footer-copyright" class="footer-copy-text">
+      &copy; 2026 GULREZ
+      <span class="footer-sep">|</span>
+      <span data-i18n="footer-dev-label">Разработка</span>
+      <a href="https://t.me/xalilov_uc" target="_blank" rel="noopener" class="footer-sino-link">SINO IT</a>
+    </span>
+    <span data-i18n="footer-made-with" class="footer-made">Сделано с ♡</span>
+  </div>
+
+</div>
+</footer>
+
+<!-- Toast -->
+<!-- ─── PRODUCT MODAL ─── -->
+<div class="modal-overlay" id="productModal" onclick="handleModalOverlayClick(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleModalLike(event)">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-content">
+      <img class="modal-main-img" id="modalMainImg" src="" alt="">
+
+      <div class="modal-thumbs" id="modalThumbs"></div>
+
+      <span class="modal-tag" id="modalTag">Хит</span>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <p class="modal-desc" id="modalDesc"></p>
+
+      <div class="modal-info-grid" id="modalInfoGrid"></div>
+
+      <div class="modal-likes-row">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="modal-likes-text" id="modalLikes"></span>
+      </div>
+
+      <div class="modal-delivery-row">
+        <div class="modal-delivery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div class="modal-delivery-text">
+          <strong data-i18n="modal-delivery-title">Доставка по Пенджикенту</strong>
+          <span data-i18n="modal-delivery-text">Стоимость доставки — 10 TJS · 08:00–22:00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-action-bar">
+      <div class="modal-qty">
+        <button class="modal-qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="modal-qty-num" id="modalQty">1</span>
+        <button class="modal-qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <button class="modal-add-btn" onclick="modalAddToCart()">
+        <span data-i18n="modal-add-btn">В корзину</span>
+        <span class="modal-add-price" id="modalPriceBtn"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── WISHLIST PANEL ─── -->
+<div class="wishlist-overlay" id="wishlistOverlay" onclick="closeWishlist()"></div>
+<aside class="wishlist-panel" id="wishlistPanel">
+
+  <div class="wishlist-panel-header">
+    <div class="wishlist-panel-title-wrap">
+      <svg viewBox="0 0 24 24" fill="var(--rose)" stroke="var(--rose)" stroke-width="1.4" width="20" height="20">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      <span class="wishlist-panel-title" id="wishlistPanelTitle">Избранное</span>
+      <span class="wishlist-count-pill" id="wishlistCountPill">0</span>
+    </div>
+    <button class="wishlist-close-btn" onclick="closeWishlist()" aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16" fill="none">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Empty state (visible when no items) -->
+  <div class="wishlist-empty" id="wishlistEmpty">
+    <div class="wishlist-empty-icon">
+      <svg viewBox="0 0 64 64" fill="none" width="42" height="42">
+        <path d="M32 54s-24-13-24-28a13 13 0 0 1 24-7 13 13 0 0 1 24 7c0 15-24 28-24 28z"
+              stroke="var(--rose)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <p class="wishlist-empty-title" id="wishlistEmptyTitle">Пусто пока...</p>
+    <p class="wishlist-empty-sub" id="wishlistEmptySub">Нажмите ♡ на любом букете — и он появится здесь</p>
+    <button class="wishlist-empty-cta" onclick="closeWishlist(); document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">
+      Посмотреть каталог
+    </button>
+  </div>
+
+  <!-- Cards list -->
+  <div class="wishlist-body" id="wishlistBody"></div>
+
+  <!-- Footer with total + action -->
+  <div class="wishlist-footer" id="wishlistFooter">
+    <div class="wishlist-footer-row">
+      <div>
+        <span class="wishlist-footer-label" id="wlFooterLabel">Итого</span>
+        <p class="wishlist-footer-items-note" id="wlItemsNote"></p>
+      </div>
+      <span class="wishlist-footer-total" id="wlFooterTotal">0 <span>TJS</span></span>
+    </div>
+    <button class="wl-btn-all-cart" onclick="addAllToCart()">
+      <span id="wlAllCartLabel">Добавить всё в корзину</span>
+    </button>
+  </div>
+
+</aside>
+
+
+<!-- ─── CART OVERLAY ─── -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+<!-- ─── CART PANEL ─── -->
+<aside class="cart-panel" id="cartPanel">
+  <div class="cart-panel-bg"></div>
+
+  <!-- Header -->
+  <div class="cart-header">
+    <div class="cart-header-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.8" stroke-linecap="round" width="20" height="20">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      <span class="cart-title" id="cartPanelTitle">Корзина</span>
+      <span class="cart-count-pill" id="cartCountPill">0</span>
+    </div>
+    <button class="cart-close-btn" onclick="closeCart()">
+      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Steps -->
+  <div class="cart-steps" id="cartStepsBar">
+    <div class="cart-step active" id="cartStep1Ind">
+      <div class="cart-step-num">1</div>
+      <span class="cart-step-name">Корзина</span>
+    </div>
+    <div class="cart-step-line"></div>
+    <div class="cart-step" id="cartStep2Ind">
+      <div class="cart-step-num">2</div>
+      <span class="cart-step-name">Оформление</span>
+    </div>
+    <div class="cart-step-line"></div>
+    <div class="cart-step" id="cartStep3Ind">
+      <div class="cart-step-num">3</div>
+      <span class="cart-step-name">Оплата</span>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="cart-body" id="cartBody">
+
+    <!-- STEP 1: Items + extras -->
+    <div id="cartViewStep1">
+      <div class="cart-step1" id="cartItemsList">
+        <!-- filled by JS -->
+      </div>
+
+      <!-- Empty state -->
+      <div class="cart-empty" id="cartEmptyState" style="display:none">
+        <div class="cart-empty-icon">🛍️</div>
+        <p class="cart-empty-title">Корзина пуста</p>
+        <p class="cart-empty-sub">Добавьте букеты из нашего каталога</p>
+        <button class="cart-empty-cta" onclick="closeCart(); document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">
+          Смотреть каталог
+        </button>
+      </div>
+
+      <!-- Extras (hidden when empty) -->
+      <div id="cartExtrasSection" style="display:none">
+        <div class="cart-step1" style="padding-top:0">
+
+          <p class="cart-extras-title">Добавить к заказу</p>
+
+          <!-- Открытка -->
+          <div class="cart-extra-row" id="extraCard" onclick="toggleExtra('card')">
+            <img class="cart-extra-img" src="images/otkritka.jpg" alt="Открытка" onerror="this.style.background='var(--blush)';this.src=''">
+            <div class="cart-extra-info">
+              <div class="cart-extra-name">Открытка</div>
+              <div class="cart-extra-sub">С любым пожеланием 💌</div>
+            </div>
+            <span class="cart-extra-price" style="color:var(--leaf);font-size:12px;letter-spacing:0.06em">БЕСПЛАТНО</span>
+            <div class="cart-extra-check">✓</div>
+          </div>
+
+          <!-- Шоколадка 1 -->
+          <div class="cart-extra-row" id="extraChoc1" onclick="toggleExtra('choc1')">
+            <img class="cart-extra-img" src="images/saka.jpg" alt="Шоколадка" onerror="this.style.background='var(--sand)';this.src=''">
+            <div class="cart-extra-info">
+              <div class="cart-extra-name">Шоколад MILK</div>
+              <div class="cart-extra-sub">Молочный, 100г <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="8" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="16" y2="20"/></svg></div>
+            </div>
+            <div class="cart-extra-qty" id="choc1Qty" onclick="event.stopPropagation()">
+              <button class="cart-extra-qty-btn" onclick="changeExtraQty('choc1',-1)">−</button>
+              <span class="cart-extra-qty-num" id="choc1QtyNum">1</span>
+              <button class="cart-extra-qty-btn" onclick="changeExtraQty('choc1',+1)">+</button>
+            </div>
+            <span class="cart-extra-price" id="choc1Price">10 TJS</span>
+            <div class="cart-extra-check">✓</div>
+          </div>
+
+          <!-- Шоколадка 2 -->
+          <div class="cart-extra-row" id="extraChoc2" onclick="toggleExtra('choc2')">
+            <img class="cart-extra-img" src="images/saka2.jpg" alt="Шоколадка 2" onerror="this.style.background='var(--sand)';this.src=''">
+            <div class="cart-extra-info">
+              <div class="cart-extra-name">Шоколад ANPELGOLD</div>
+              <div class="cart-extra-sub">Горький 72%, 80г <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="8" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="16" y2="20"/></svg></div>
+            </div>
+            <div class="cart-extra-qty" id="choc2Qty" onclick="event.stopPropagation()">
+              <button class="cart-extra-qty-btn" onclick="changeExtraQty('choc2',-1)">−</button>
+              <span class="cart-extra-qty-num" id="choc2QtyNum">1</span>
+              <button class="cart-extra-qty-btn" onclick="changeExtraQty('choc2',+1)">+</button>
+            </div>
+            <span class="cart-extra-price" id="choc2Price">11 TJS</span>
+            <div class="cart-extra-check">✓</div>
+          </div>
+
+          <!-- Шоколадка 3 -->
+          <div class="cart-extra-row" id="extraChoc3" onclick="toggleExtra('choc3')">
+            <img class="cart-extra-img" src="images/saka3.jpg" alt="Шоколадка 3" onerror="this.style.background='var(--sand)';this.src=''">
+            <div class="cart-extra-info">
+              <div class="cart-extra-name">Шоколад Трюфель</div>
+              <div class="cart-extra-sub">Ассорти, 120г <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:middle"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="8" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="16" y2="20"/></svg></div>
+            </div>
+            <div class="cart-extra-qty" id="choc3Qty" onclick="event.stopPropagation()">
+              <button class="cart-extra-qty-btn" onclick="changeExtraQty('choc3',-1)">−</button>
+              <span class="cart-extra-qty-num" id="choc3QtyNum">1</span>
+              <button class="cart-extra-qty-btn" onclick="changeExtraQty('choc3',+1)">+</button>
+            </div>
+            <span class="cart-extra-price" id="choc3Price">15 TJS</span>
+            <div class="cart-extra-check">✓</div>
+          </div>
+
+        </div>
+        <div class="cart-step1-bottom"></div>
+      </div>
+    </div><!-- /step1 -->
+
+    <!-- STEP 2: Order form -->
+    <div id="cartViewStep2" style="display:none">
+      <div class="cart-step2" style="padding-bottom: 16px;">
+
+        <!-- ⏱ Prep-time banner -->
+        <div class="cart-prep-banner">
+          <span class="cart-prep-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+          </span>
+          <span>Заказ в среднем готовится <strong>50–90 минут</strong></span>
+        </div>
+
+        <!-- Recipient toggle -->
+        <p class="cart-form-label" style="margin-bottom:12px; margin-top:4px;">Кому заказываем?</p>
+        <div class="cart-recipient-toggle">
+          <div class="cart-rec-btn active" id="recSelf" onclick="setRecipient('self')">
+            <span class="cart-rec-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+            <div class="cart-rec-label">Себе</div>
+            <div class="cart-rec-sub">Заберу сам(а)</div>
+          </div>
+          <div class="cart-rec-btn" id="recOther" onclick="setRecipient('other')">
+            <span class="cart-rec-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+            <div class="cart-rec-label">Другому</div>
+            <div class="cart-rec-sub">Отправить в подарок</div>
+          </div>
+        </div>
+
+        <!-- Fields for SELF -->
+        <div id="formSelf">
+          <div class="cart-form-section">
+            <label class="cart-form-label">Ваше имя *</label>
+            <input class="cart-input" id="selfName" type="text" placeholder="Как вас зовут?" autocomplete="name">
+          </div>
+          <div class="cart-form-section">
+            <label class="cart-form-label">Номер телефона *</label>
+            <div class="cart-phone-group">
+              <span class="cart-phone-prefix">+992</span>
+              <input class="cart-input cart-phone-input" id="selfPhone" type="tel" inputmode="numeric" placeholder="XX XXX XX XX" autocomplete="tel">
+            </div>
+          </div>
+          <div class="cart-form-section">
+            <label class="cart-form-label">Адрес доставки *</label>
+            <input class="cart-input" id="selfAddress" type="text" placeholder="Улица, дом, квартира">
+          </div>
+          <div class="cart-form-section">
+            <label class="cart-form-label">Комментарий к заказу</label>
+            <textarea class="cart-textarea" id="selfComment" placeholder="Пожелания, детали..."></textarea>
+          </div>
+        </div>
+
+        <!-- Fields for OTHER -->
+        <div id="formOther" style="display:none">
+          <div class="cart-form-section">
+            <label class="cart-form-label">Имя получателя *</label>
+            <input class="cart-input" id="otherRecName" type="text" placeholder="Кому адресован подарок?">
+          </div>
+          <div class="cart-form-section">
+            <label class="cart-form-label">Телефон получателя *</label>
+            <div class="cart-phone-group">
+              <span class="cart-phone-prefix">+992</span>
+              <input class="cart-input cart-phone-input" id="otherRecPhone" type="tel" inputmode="numeric" placeholder="XX XXX XX XX">
+            </div>
+          </div>
+          <div class="cart-form-section">
+            <label class="cart-form-label">Ваш номер телефона *</label>
+            <div class="cart-phone-group">
+              <span class="cart-phone-prefix">+992</span>
+              <input class="cart-input cart-phone-input" id="otherSenderPhone" type="tel" inputmode="numeric" placeholder="XX XXX XX XX" autocomplete="tel">
+            </div>
+          </div>
+          <div class="cart-form-section">
+            <label class="cart-form-label">Адрес получателя *</label>
+            <input class="cart-input" id="otherAddress" type="text" placeholder="Куда доставить?">
+          </div>
+          <div class="cart-form-section">
+            <label class="cart-form-label">Комментарий</label>
+            <textarea class="cart-textarea" id="otherComment" placeholder="Пожелания, детали..."></textarea>
+          </div>
+        </div>
+
+        <!-- 💌 Greeting card text (shown only if card selected) -->
+        <div class="cart-form-section cart-card-text-wrap" id="cartCardTextWrap" style="display:none">
+          <label class="cart-form-label cart-card-text-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Текст открытки
+          </label>
+          <textarea class="cart-textarea cart-card-textarea" id="cardText" rows="3" placeholder="Напишите пожелание — наш флорист красиво оформит 💌" maxlength="200"></textarea>
+          <div class="cart-card-text-counter"><span id="cardTextCount">0</span>/200</div>
+        </div>
+
+        <!-- 🗓 Schedule field -->
+        <div class="cart-form-section cart-schedule-wrap">
+          <label class="cart-form-label cart-schedule-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Желаемое время доставки
+          </label>
+          <div class="cart-schedule-row">
+            <button class="cart-schedule-chip active" id="schedNow" onclick="setSchedule('now',this)">Как можно скорее</button>
+            <button class="cart-schedule-chip" id="schedLater" onclick="setSchedule('later',this)">Выбрать время</button>
+          </div>
+          <div id="schedDateTimeWrap" style="display:none;margin-top:10px">
+            <input class="cart-input" type="datetime-local" id="schedDateTime" style="padding-right:12px">
+          </div>
+        </div>
+
+        <!-- Mini order summary -->
+        <div class="cart-order-summary" id="cartOrderSummary">
+          <!-- filled by JS -->
+        </div>
+
+      </div>
+    </div><!-- /step2 -->
+
+    <!-- STEP 3: Payment via card -->
+    <div id="cartViewStep3" style="display:none">
+
+      <!-- A: Payment details screen -->
+      <div class="cart-payment-step" id="cartPaymentDetails">
+        <div class="cart-payment-header">
+          <div class="cart-payment-petals">✿ ✦ ✿</div>
+          <p class="cart-payment-title">Оплата заказа</p>
+          <p class="cart-payment-sub">Переведите на карту и прикрепите чек</p>
+        </div>
+
+        <!-- Order number -->
+        <div class="cart-pay-order-num" id="cartPayOrderNum">GUL-00000000-0000</div>
+
+        <!-- Total to pay -->
+        <div class="cart-pay-total-card">
+          <span class="cart-pay-total-label">К оплате</span>
+          <span class="cart-pay-total-amount" id="cartPayAmount">0 <span>TJS</span></span>
+        </div>
+
+        <!-- Bank card info -->
+        <div class="cart-bank-card">
+          <div class="cart-bank-card-chip"></div>
+          <div class="cart-bank-card-top">
+            <span class="cart-bank-card-bank" id="payCardBank">Eskhata Bank</span>
+            <svg viewBox="0 0 38 24" width="38" height="24" fill="none"><rect width="38" height="24" rx="4" fill="#eb001b" opacity=".9"/><circle cx="15" cy="12" r="7" fill="#eb001b"/><circle cx="23" cy="12" r="7" fill="#f79e1b" opacity=".9"/><path d="M19 6.8a7 7 0 0 1 0 10.4A7 7 0 0 1 19 6.8z" fill="#ff5f00"/></svg>
+          </div>
+          <div class="cart-bank-num-row">
+            <span class="cart-bank-num" id="payCardNumber">0000 0000 0000 0000</span>
+            <button class="cart-bank-copy-btn" onclick="copyCardNumber()" title="Скопировать">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span id="copyCardTxt">Скопировать</span>
+            </button>
+          </div>
+          <div class="cart-bank-name" id="payCardName">GULREZ Flowers</div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="cart-pay-steps">
+          <div class="cart-pay-step-item">
+            <div class="cart-pay-step-num">1</div>
+            <span>Переведите точную сумму на карту выше</span>
+          </div>
+          <div class="cart-pay-step-item">
+            <div class="cart-pay-step-num">2</div>
+            <span>Сохраните скриншот / чек оплаты</span>
+          </div>
+          <div class="cart-pay-step-item">
+            <div class="cart-pay-step-num">3</div>
+            <span>Нажмите кнопку ниже и прикрепите чек</span>
+          </div>
+        </div>
+
+        <button class="cart-pay-cta" onclick="showReceiptUpload()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Я оплатил(а) — прикрепить чек
+        </button>
+      </div>
+
+      <!-- B: Receipt upload screen -->
+      <div class="cart-receipt-step" id="cartReceiptUpload" style="display:none">
+        <div class="cart-receipt-header">
+          <p class="cart-receipt-title">Прикрепите чек</p>
+          <p class="cart-receipt-sub">Фото или скриншот из банковского приложения</p>
+          <div class="cart-receipt-order-ref" id="cartReceiptOrderRef"></div>
+        </div>
+
+        <div class="cart-receipt-drop-zone" id="cartReceiptDropZone" onclick="document.getElementById('receiptFileInput').click()">
+          <div class="cart-receipt-drop-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" width="38" height="38"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <p class="cart-receipt-drop-text">Нажмите для выбора фото</p>
+          <p class="cart-receipt-drop-sub">JPG, PNG — до 10 МБ</p>
+          <input type="file" id="receiptFileInput" accept="image/*" style="display:none" onchange="previewReceipt(this)">
+        </div>
+
+        <!-- Preview -->
+        <div class="cart-receipt-preview" id="cartReceiptPreview" style="display:none">
+          <img class="cart-receipt-preview-img" id="cartReceiptPreviewImg" src="" alt="Чек">
+          <div class="cart-receipt-preview-info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--leaf)" stroke-width="2" stroke-linecap="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="cartReceiptFileName">файл выбран</span>
+          </div>
+        </div>
+
+        <button class="cart-pay-cta" id="cartSubmitReceiptBtn" onclick="submitOrderWithReceipt()" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Отправить заказ
+        </button>
+
+        <button class="cart-receipt-back-link" onclick="showPaymentDetails()">
+          ← Назад к реквизитам
+        </button>
+      </div>
+
+      <!-- C: Success screen -->
+      <div class="cart-order-success" id="cartOrderSuccess" style="display:none">
+        <div class="cart-success-anim">
+          <div class="cart-success-ring"></div>
+          <div class="cart-success-check">✓</div>
+        </div>
+        <p class="cart-success-title">Заказ оформлен!</p>
+        <p class="cart-success-num" id="cartSuccessOrderNum"></p>
+        <div class="cart-success-time-pill" id="cartSuccessTime">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+          Примерное время доставки: <strong id="cartSuccessETA">—</strong>
+        </div>
+        <p class="cart-success-sub">Мы проверим оплату и свяжемся с вами 🌸<br>Статус можно отследить в профиле</p>
+        <a href="/user#orders" class="cart-success-track-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Отследить заказ
+        </a>
+        <button class="cart-success-close-btn" onclick="closeCart()">Закрыть</button>
+      </div>
+
+    </div>
+
+  </div><!-- /cart-body -->
+
+  <!-- Sticky footer -->
+  <div class="cart-footer" id="cartFooter">
+    <div class="cart-footer-total-row">
+      <div>
+        <div class="cart-footer-label">Итого</div>
+        <div class="cart-footer-note" id="cartFooterNote"></div>
+      </div>
+      <div class="cart-footer-total" id="cartFooterTotal">0 <span>TJS</span></div>
+    </div>
+    <button class="cart-btn-next" id="cartNextBtn" onclick="cartNextStep()">
+      <span id="cartNextLabel">Перейти к оформлению</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+    <button class="cart-btn-back" id="cartBackBtn" onclick="cartPrevStep()" style="display:none">
+      ← Назад к корзине
+    </button>
+  </div>
+
+</aside>
+
+<!-- ─── SEARCH PANEL ─── -->
+<div class="search-overlay" id="searchOverlay" onclick="closeSearch()"></div>
+<div class="search-panel" id="searchPanel">
+  <div class="search-panel-inner">
+
+    <!-- Top bar: field + close -->
+    <div class="search-top-row">
+      <div class="search-field-wrap">
+        <svg class="search-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7.5"/><line x1="21" y1="21" x2="16.4" y2="16.4"/>
+        </svg>
+        <input class="search-field" id="searchInput" type="text"
+               placeholder="Поиск букетов..." autocomplete="off" spellcheck="false"
+               oninput="doSearch(this.value)"
+               onkeydown="if(event.key==='Escape')closeSearch()">
+        <button class="search-field-clear" id="searchClearBtn" onclick="clearSearch()" style="display:none" aria-label="Очистить">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="13" height="13">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <button class="search-close-btn" onclick="closeSearch()" aria-label="Закрыть поиск">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Initial state: popular tags -->
+    <div id="searchInitialState">
+      <p class="search-hint-label" data-i18n="search-popular">Популярные запросы</p>
+      <div class="search-tags">
+        <button class="search-tag" onclick="setSearch('Розы')">Розы</button>
+        <button class="search-tag" onclick="setSearch('Тюльпаны')">Тюльпаны</button>
+        <button class="search-tag" onclick="setSearch('Пионы')">Пионы</button>
+        <button class="search-tag" onclick="setSearch('Хризантемы')">Хризантемы</button>
+        <button class="search-tag" onclick="setSearch('Подсолнухи')">Подсолнухи</button>
+        <button class="search-tag" onclick="setSearch('Лаванда')">Лаванда</button>
+        <button class="search-tag" onclick="setSearch('Premium')">Premium</button>
+        <button class="search-tag" onclick="setSearch('Хит')">Хит</button>
+      </div>
+    </div>
+
+    <!-- Results area -->
+    <div id="searchResultsArea" style="display:none">
+      <p class="search-results-label" id="searchCountLabel"></p>
+      <div class="search-results-grid" id="searchResultsGrid"></div>
+    </div>
+
+    <!-- No results -->
+    <div class="search-no-results-state" id="searchNoResults" style="display:none">
+      <svg viewBox="0 0 64 64" fill="none" width="52" height="52">
+        <circle cx="27" cy="27" r="17" stroke="var(--taupe)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="40" y1="40" x2="56" y2="56" stroke="var(--taupe)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="21" y1="27" x2="33" y2="27" stroke="var(--rose)" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="27" y1="21" x2="27" y2="33" stroke="var(--rose)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <p>Ничего не найдено</p>
+      <p class="search-no-results-sub-text" id="searchNoResultsMsg">Попробуйте другое название</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- PWA Prompt Overlay -->
+<div class="pwa-prompt-overlay" id="pwaOverlay"></div>
+
+<!-- PWA Bottom Sheet -->
+<div class="pwa-prompt" id="pwaPrompt" role="dialog" aria-modal="true" aria-label="Улучшить опыт">
+  <div class="pwa-prompt-handle"></div>
+  <div class="pwa-prompt-logo">
+    <img src="/icons/web-app-manifest-192x192.png" alt="GULREZ">
+  </div>
+  <div class="pwa-prompt-title">GULREZ</div>
+  <div class="pwa-prompt-sub">Сделайте покупки ещё удобнее</div>
+  <div class="pwa-prompt-actions" id="pwaPromptActions">
+    <button class="pwa-prompt-btn pwa-prompt-btn--install pwa-install-btn" id="pwaPromptInstall">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Установить приложение
+    </button>
+    <button class="pwa-prompt-btn pwa-prompt-btn--notif pwa-notif-btn" id="pwaPromptNotif">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Включить уведомления
+    </button>
+  </div>
+  <button class="pwa-prompt-skip" id="pwaPromptSkip">Не сейчас</button>
+</div>
+
+<script src="js/script.js"></script>
+<script src="js/language.js"></script>
+<script src="js/push.js"></script>
+<script src="js/pwa.js"></script>
+<script>
+(function () {
+  var STORAGE_KEY = 'gulrez_pwa_prompt_v1';
+  var overlay  = document.getElementById('pwaOverlay');
+  var prompt   = document.getElementById('pwaPrompt');
+  var skipBtn  = document.getElementById('pwaPromptSkip');
+  var installB = document.getElementById('pwaPromptInstall');
+  var notifB   = document.getElementById('pwaPromptNotif');
+
+  function closePrompt() {
+    prompt.classList.remove('open');
+    overlay.classList.remove('active');
+    localStorage.setItem(STORAGE_KEY, '1');
+  }
+
+  function updatePromptButtons() {
+    // Refresh notif button state from pwa.js
+    if (typeof updateNotifBtns === 'function') updateNotifBtns();
+    // Check if anything left to show
+    var installHidden = installB.style.display === 'none';
+    var notifHidden   = notifB.style.display   === 'none';
+    if (installHidden && notifHidden) closePrompt();
+  }
+
+  function openPrompt() {
+    // Don't show if already dismissed or standalone
+    if (localStorage.getItem(STORAGE_KEY)) return;
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+
+    // Sync button visibility (pwa.js already ran)
+    updatePromptButtons();
+    var installHidden = installB.style.display === 'none';
+    var notifHidden   = notifB.style.display   === 'none';
+    if (installHidden && notifHidden) return;  // nothing to offer
+
+    prompt.classList.add('open');
+    overlay.classList.add('active');
+  }
+
+  // Close on skip or overlay click
+  skipBtn.addEventListener('click', closePrompt);
+  overlay.addEventListener('click', closePrompt);
+
+  // Install button
+  installB.addEventListener('click', async function () {
+    await installApp();
+    installB.style.display = 'none';
+    updatePromptButtons();
+  });
+
+  // Notifications button — ask permission then update
+  notifB.addEventListener('click', async function () {
+    notifB.disabled = true;
+    notifB.textContent = 'Подключение...';
+    try {
+      await enablePushNotifications();
+      notifB.textContent = '✓ Уведомления включены';
+      notifB.classList.add('pwa-prompt-btn--done');
+      setTimeout(() => {
+        notifB.style.display = 'none';
+        updatePromptButtons();
+      }, 1200);
+    } catch {
+      notifB.disabled = false;
+      notifB.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Включить уведомления';
+    }
+  });
+
+  // Show after 3 seconds once pwa.js has initialized
+  setTimeout(openPrompt, 3000);
+})();
+</script>
+<script>
+// ── Auto-apply saved language ──────────────────────────────────────────────
+(function() {
+  var saved = localStorage.getItem('gulrezLang');
+  if (saved && saved !== 'RU' && typeof setLang === 'function') setLang(saved);
+})();
+</script>
+<script>
+// ── Auth: show username + dropdown instead of login button ───────────────
+(function() {
+  fetch('/api/me', { credentials: 'same-origin' })
+    .then(r => r.json())
+    .then(data => {
+      window._isLoggedIn = !!data.loggedIn;
+      if (!data.loggedIn) return;
+
+      // Desktop header
+      const wrap = document.getElementById('authBtnWrap');
+      if (wrap) {
+        wrap.innerHTML =
+          '<div class="user-menu" id="userMenu">' +
+            '<button class="user-menu-trigger" onclick="toggleUserMenu(event)">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>' +
+              ' ' + data.login +
+              '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="11" height="11"><polyline points="6 9 12 15 18 9"/></svg>' +
+            '</button>' +
+            '<div class="user-menu-dropdown" id="userMenuDrop">' +
+              (data.role === 'admin' ? '<a href="/admin" class="user-menu-item">&#9881; Панель управления</a>' : '<a href="/user" class="user-menu-item">&#128100; Мой профиль</a>') +
+              '<button class="user-menu-item user-menu-logout" onclick="siteLogout()">&#10005; Выйти</button>' +
+            '</div>' +
+          '</div>';
+      }
+
+      // Mobile nav — user card
+      const mWrap = document.getElementById('mobileAuthBtnWrap');
+      if (mWrap) {
+        const initial = data.login.charAt(0).toUpperCase();
+        const roleLabel = data.role === 'admin' ? 'Администратор' : 'Пользователь';
+        const dest = data.role === 'admin' ? '/admin' : '/user';
+        mWrap.innerHTML =
+          '<div class="mob-user-logged">' +
+            '<a href="' + dest + '" class="mobile-login-btn mob-username-btn" onclick="closeMobileNav()">' +
+              data.login +
+            '</a>' +
+            '<button onclick="siteLogout()" class="mob-icon-btn mob-icon-btn-logout" title="Выйти">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>' +
+            '</button>' +
+          '</div>';
+      }
+    }).catch(() => {});
+
+  window.toggleUserMenu = function(e) {
+    e.stopPropagation();
+    const d = document.getElementById('userMenuDrop');
+    if (d) d.classList.toggle('open');
+  };
+  document.addEventListener('click', function() {
+    const d = document.getElementById('userMenuDrop');
+    if (d) d.classList.remove('open');
+  });
+  window.siteLogout = function() {
+    fetch('/logout', { method: 'POST', credentials: 'same-origin' })
+      .then(() => location.reload());
+  };
+})();
+
+// ── Load hero settings from server ───────────────────────────────────────────
+(function() {
+  fetch('/api/hero')
+    .then(r => r.json())
+    .then(data => {
+      if (!data) return;
+
+      // Apply slide background images
+      const slideClasses = ['slide-1','slide-2','slide-3','slide-4'];
+      slideClasses.forEach((cls, i) => {
+        const el = document.querySelector('.' + cls);
+        if (el && data.images[i]) {
+          el.style.backgroundImage = `url('${data.images[i]}')`;
+        }
+      });
+
+      // Store quotes for all languages — override defaults from script.js / language.js
+      window._heroData = data;
+      window._heroQuotes = data.quotes.RU;
+
+      // Show first quote right away
+      const q = document.getElementById('heroQuote');
+      if (q && data.quotes.RU[0]) q.textContent = data.quotes.RU[0];
+    })
+    .catch(() => {});
+})();
+</script>
+<script>
+// ── FAQ accordion ──
+function faqToggle(btn) {
+  const item   = btn.closest('.faq-item');
+  const answer = item.querySelector('.faq-a');
+  const arrow  = btn.querySelector('.faq-q-arrow');
+  const isOpen = item.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-a').style.maxHeight = '0';
+    el.querySelector('.faq-q-arrow').textContent = '+';
+  });
+  // Open clicked (if was closed)
+  if (!isOpen) {
+    item.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+    arrow.textContent = '×';
+    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+// Animate FAQ items on scroll
+const _faqObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); _faqObserver.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.faq-item').forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.06) + 's';
+  _faqObserver.observe(el);
+});
+</script>
+
+<!-- ══════════════════════════════════════════
+     ORDER TRACKING WIDGET (floating, like chat)
+     ══════════════════════════════════════════ -->
+<div class="otrack-wrap" id="otrackWrap" style="display:none">
+
+  <!-- Floating panel (opens upward) -->
+  <div class="otrack-panel" id="otrackPanel">
+
+    <!-- Header -->
+    <div class="otrack-panel-header">
+      <div class="otrack-panel-hicon">🌸</div>
+      <div class="otrack-panel-hinfo">
+        <span class="otrack-panel-title">Заказ №<span id="otrackNum">—</span></span>
+        <span class="otrack-panel-sub">
+          <span class="otrack-live-dot"></span>Онлайн-трекинг
+        </span>
+      </div>
+      <button class="otrack-panel-close" onclick="otrackToggle()" aria-label="Свернуть">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Road / progress bar -->
+    <div class="otrack-road-wrap">
+      <div class="otrack-road">
+        <div class="otrack-road-fill" id="otrackRoadFill"></div>
+        <div class="otrack-flower-car" id="otrackCar">🌸</div>
+      </div>
+      <div class="otrack-road-dots">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Steps timeline -->
+    <div class="otrack-steps" id="otrackSteps"></div>
+
+    <!-- ETA + status message -->
+    <div class="otrack-bottom">
+      <div class="otrack-eta-box">
+        <span class="otrack-eta-icon">⏱</span>
+        <div>
+          <div class="otrack-eta-label">Время доставки</div>
+          <div class="otrack-eta-val" id="otrackEtaVal">—</div>
+        </div>
+      </div>
+      <div class="otrack-msg" id="otrackMsg"></div>
+    </div>
+
+  </div>
+
+  <!-- FAB button -->
+  <button class="otrack-fab" id="otrackFab" onclick="otrackToggle()" aria-label="Трекинг заказа">
+    <span class="otrack-fab-flower">🌸</span>
+    <span class="otrack-fab-close-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </span>
+    <span class="otrack-fab-badge" id="otrackBadge"></span>
+  </button>
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     BOTTOM NAVIGATION BAR (mobile app)
+══════════════════════════════════════════ -->
+<nav class="app-bnav" id="appBnav">
+  <button class="app-bnav-item" id="bnavCatalog" onclick="appBnavGo('catalog')">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+    </span>
+  </button>
+  <button class="app-bnav-item" id="bnavCart" onclick="if(typeof closeWishlist==='function')closeWishlist(); openCart()">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="app-bnav-badge" id="bnavCartBadge" style="display:none">0</span>
+    </span>
+  </button>
+  <button class="app-bnav-item app-bnav-center-item" id="bnavHome" onclick="appBnavGo('home')">
+    <span class="app-bnav-center-btn">
+      <img src="/images/sino.png" alt="GULREZ">
+    </span>
+  </button>
+  <button class="app-bnav-item" id="bnavWish" onclick="if(typeof closeCart==='function')closeCart(); openWishlist()">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span class="app-bnav-badge" id="bnavWishBadge" style="display:none">0</span>
+    </span>
+  </button>
+  <button class="app-bnav-item" id="bnavProfile" onclick="window.location.href='/user'">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </span>
+  </button>
+</nav>
+
+<script>
+
+// ── Bottom Nav logic ──
+function appBnavGo(tab) {
+  if (typeof closeCart === 'function') closeCart();
+  if (typeof closeWishlist === 'function') closeWishlist();
+  document.querySelectorAll('.app-bnav-item').forEach(b => b.classList.remove('active'));
+  if (tab === 'home') {
+    document.getElementById('bnavHome').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (tab === 'catalog') {
+    document.getElementById('bnavCatalog').classList.add('active');
+    const el = document.getElementById('catalog');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+function _appBnavSync() {
+  if (window.innerWidth <= 768) {
+    const catalog = document.getElementById('catalog');
+    if (catalog) {
+      const catalogTop = catalog.getBoundingClientRect().top + window.scrollY - 120;
+      document.getElementById('bnavCatalog').classList.toggle('active', window.scrollY >= catalogTop);
+    }
+  }
+  // badges are updated directly by _updateCartBadge() and _updateWishBadge()
+}
+window.addEventListener('scroll', _appBnavSync, { passive: true });
+setInterval(_appBnavSync, 600);
+
+// Handle URL params from user.html nav links
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('openCart') === '1') {
+    history.replaceState(null, '', '/');
+    window.addEventListener('DOMContentLoaded', () => { if (typeof openCart === 'function') openCart(); }, { once: true });
+    if (document.readyState !== 'loading' && typeof openCart === 'function') openCart();
+  }
+  if (params.get('openWishlist') === '1') {
+    history.replaceState(null, '', '/');
+    window.addEventListener('DOMContentLoaded', () => { if (typeof openWishlist === 'function') openWishlist(); }, { once: true });
+    if (document.readyState !== 'loading' && typeof openWishlist === 'function') openWishlist();
+  }
+})();
+</script>
+
+</body>
+</html>

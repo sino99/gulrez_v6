@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профиль — GULREZ</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#c97b6e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/user.css">
+  <style>
+  .ua-pwa-row{display:flex;flex-direction:column;gap:8px;padding:12px 0}
+  .ua-pwa-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;transition:opacity .2s}
+  .ua-pwa-btn--install{background:linear-gradient(135deg,#c97b6e,#b8604e);color:#fff}
+  .ua-pwa-btn--notif{background:#f3ede9;color:#7a4a3a}
+  .ua-pwa-btn--notif.pwa-notif-btn--on{background:#e8f5e9;color:#388e3c;cursor:default}
+  .ua-pwa-btn:hover{opacity:.88}
+  </style>
+</head>
+<body>
+
+<!-- ══ App Header ══ -->
+<header class="ua-header">
+  <a class="ua-header-back" id="uaBackBtn" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="20" height="20"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <span class="ua-header-logo" data-i18n="profile">Профиль</span>
+  <div class="ua-header-spacer"></div>
+</header>
+
+<!-- ══ Guest State (shown if not logged in) ══ -->
+<div class="ua-guest" id="uaGuest" style="display:none">
+  <div class="ua-guest-flower"><svg viewBox="0 0 24 24" fill="none" stroke="#c4a0a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="48" height="48"><circle cx="12" cy="12" r="3"/><path d="M12 2a3 3 0 0 1 3 3c0 1.5-1.5 3-3 3s-3-1.5-3-3a3 3 0 0 1 3-3z"/><path d="M12 16a3 3 0 0 1 3 3c0 1.5-1.5 3-3 3s-3-1.5-3-3a3 3 0 0 1 3-3z"/><path d="M2 12a3 3 0 0 1 3-3c1.5 0 3 1.5 3 3s-1.5 3-3 3a3 3 0 0 1-3-3z"/><path d="M16 12a3 3 0 0 1 3-3c1.5 0 3 1.5 3 3s-1.5 3-3 3a3 3 0 0 1-3-3z"/></svg></div>
+  <h2 class="ua-guest-title">Войдите в аккаунт</h2>
+  <p class="ua-guest-sub">Чтобы видеть заказы, баллы и историю покупок</p>
+  <a class="ua-guest-btn ua-guest-btn--primary" href="/login.html">Войти</a>
+  <a class="ua-guest-btn ua-guest-btn--secondary" href="/register.html">Зарегистрироваться</a>
+</div>
+
+<!-- ══ Main Profile (shown if logged in) ══ -->
+<div class="ua-main" id="uaMain" style="display:none">
+
+  <!-- Profile Hero Card -->
+  <div class="ua-profile-hero">
+    <div class="ua-avatar-wrap" id="upAvatarWrap" onclick="document.getElementById('avatarFileInput').click()" title="Сменить аватарку">
+      <div class="ua-avatar" id="upAvatar">?</div>
+      <div class="ua-avatar-cam">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+    </div>
+    <div class="ua-profile-info">
+      <h1 class="ua-profile-name" id="upName">...</h1>
+      <p class="ua-profile-phone" id="upPhone">—</p>
+    </div>
+  </div>
+
+  <!-- Menu Groups -->
+  <div class="ua-menu-wrap">
+
+    <!-- Group 1: Account -->
+    <div class="ua-menu-group">
+      <button class="ua-menu-item" onclick="uaToggle('orders')" id="uaItemOrders">
+        <span class="ua-menu-icon-wrap" style="background:rgba(196,160,160,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="#c4a0a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4A2 2 0 0 1 2 16.76V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg></span>
+        <span class="ua-menu-label" data-i18n="my_orders">Мои заказы</span>
+        <span class="ua-menu-badge" id="uaOrdersBadge" style="display:none">0</span>
+        <svg class="ua-menu-chevron" id="uaChevronOrders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <!-- Inline: Orders -->
+      <div class="ua-section" id="uaSectionOrders" style="display:none">
+        <div id="ordersLoading" class="up-loading-state">
+          <div class="up-spinner"></div><p data-i18n="loading_orders">Загружаем заказы...</p>
+        </div>
+        <div id="ordersEmpty" class="up-empty-state" style="display:none">
+          <div class="up-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="40" height="40"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+          <p class="up-empty-title" data-i18n="no_orders">Заказов пока нет</p>
+          <p class="up-empty-sub" data-i18n="choose_catalog">Выберите букет в каталоге</p>
+          <a href="/" class="up-empty-cta" data-i18n="to_catalog">В каталог</a>
+        </div>
+        <div id="ordersList" style="display:none"></div>
+      </div>
+
+      <button class="ua-menu-item" onclick="uaToggle('points')" id="uaItemPoints">
+        <span class="ua-menu-icon-wrap" style="background:rgba(212,168,67,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+        <span class="ua-menu-label" data-i18n="loyalty">Программа лояльности</span>
+        <svg class="ua-menu-chevron" id="uaChevronPoints" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <!-- Inline: Points -->
+      <div class="ua-section" id="uaSectionPoints" style="display:none">
+
+        <!-- Balance card -->
+        <div class="up-points-card">
+          <div class="up-points-card-bg"></div>
+          <div class="up-points-card-inner">
+            <div class="up-points-stars">★ ★ ★</div>
+            <div class="up-points-main">
+              <span class="up-points-big" id="pointsMain">0</span>
+              <span class="up-points-unit">баллов</span>
+            </div>
+            <p class="up-points-lifetime">Всего накоплено: <strong id="pointsLifetime">0</strong></p>
+          </div>
+        </div>
+
+        <!-- Tier levels -->
+        <div class="up-tiers">
+          <div class="up-tier-item" id="tierBronze">
+            <span class="up-tier-dot" style="background:#cd7f32"></span>
+            <div class="up-tier-info"><div class="up-tier-name">Бронзовый</div><div class="up-tier-range">50–199 б.</div></div>
+          </div>
+          <div class="up-tier-item" id="tierSilver">
+            <span class="up-tier-dot" style="background:#a8a9ad"></span>
+            <div class="up-tier-info"><div class="up-tier-name">Серебряный</div><div class="up-tier-range">200–1 999 б.</div></div>
+          </div>
+          <div class="up-tier-item" id="tierGold">
+            <span class="up-tier-dot" style="background:#d4a843"></span>
+            <div class="up-tier-info"><div class="up-tier-name">Золото</div><div class="up-tier-range">2 000–4 999 б.</div></div>
+          </div>
+          <div class="up-tier-item" id="tierVip">
+            <span class="up-tier-dot" style="background:#c4a0a0"></span>
+            <div class="up-tier-info"><div class="up-tier-name">VIP</div><div class="up-tier-range">5 000+ б.</div></div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="up-loy-tabs">
+          <button class="up-loy-tab active" id="loyTabHistory" onclick="loyTab('history')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            История
+          </button>
+          <button class="up-loy-tab" id="loyTabRating" onclick="loyTab('rating')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+            Рейтинг
+          </button>
+        </div>
+
+        <!-- История panel -->
+        <div class="up-loy-panel" id="loyPanelHistory">
+          <div id="loyHistoryLoading" class="up-loading-state"><div class="up-spinner"></div></div>
+          <div id="loyHistoryList" style="display:none"></div>
+          <div id="loyHistoryEmpty" class="up-loy-empty" style="display:none">Покупок с баллами пока нет</div>
+        </div>
+
+        <!-- Рейтинг panel -->
+        <div class="up-loy-panel" id="loyPanelRating" style="display:none">
+          <div id="loyRatingLoading" class="up-loading-state"><div class="up-spinner"></div></div>
+          <div id="loyRatingMeta" class="up-rating-meta" style="display:none"></div>
+          <div id="loyRatingList" style="display:none"></div>
+          <div id="loyMyRankCard" style="display:none"></div>
+        </div>
+
+      </div>
+
+      <button class="ua-menu-item" onclick="uaToggle('chats')" id="uaItemChats">
+        <span class="ua-menu-icon-wrap" style="background:rgba(58,123,213,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#3a7bd5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+        <span class="ua-menu-label" data-i18n="my_chats">Мои чаты</span>
+        <span class="ua-menu-badge" id="uaChatsBadge" style="display:none">0</span>
+        <svg class="ua-menu-chevron" id="uaChevronChats" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <!-- Inline: Chats = orders list to tap into chat -->
+      <div class="ua-section" id="uaSectionChats" style="display:none">
+        <div id="chatsLoading" class="up-loading-state"><div class="up-spinner"></div><p data-i18n="loading">Загружаем...</p></div>
+        <div id="chatsList" style="display:none"></div>
+        <div id="chatsEmpty" class="up-empty-state" style="display:none">
+          <div class="up-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="40" height="40"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <p class="up-empty-title" data-i18n="no_chats">Нет активных чатов</p>
+          <p class="up-empty-sub" data-i18n="chat_after_order">Чат появится после оформления заказа</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group 2: Info & Settings -->
+    <div class="ua-menu-group">
+      <a class="ua-menu-item" href="/#about">
+        <span class="ua-menu-icon-wrap" style="background:rgba(90,138,90,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#5a8a5a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+        <span class="ua-menu-label" data-i18n="about_us">О нас</span>
+        <svg class="ua-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="ua-menu-item" href="/#footer">
+        <span class="ua-menu-icon-wrap" style="background:rgba(90,90,180,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#5a5ab4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+        <span class="ua-menu-label" data-i18n="contacts">Контакты</span>
+        <svg class="ua-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="ua-menu-item" href="/#reviews">
+        <span class="ua-menu-icon-wrap" style="background:rgba(212,168,67,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+        <span class="ua-menu-label" data-i18n="reviews">Отзывы</span>
+        <svg class="ua-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <button class="ua-menu-item" onclick="uaToggle('lang')" id="uaItemLang">
+        <span class="ua-menu-icon-wrap" style="background:rgba(0,160,160,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#00a0a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+        <span class="ua-menu-label" data-i18n="change_lang">Смена языка</span>
+        <svg class="ua-menu-chevron" id="uaChevronLang" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <!-- Inline: Language -->
+      <div class="ua-section ua-lang-section" id="uaSectionLang" style="display:none">
+        <div class="ua-lang-grid">
+          <button class="ua-lang-btn" data-lang="ru" onclick="uaSetLang('ru')">
+            <span class="ua-lang-flag">🇷🇺</span>
+            <span class="ua-lang-code">RU</span>
+            <span class="ua-lang-name">Русский</span>
+          </button>
+          <button class="ua-lang-btn" data-lang="tj" onclick="uaSetLang('tj')">
+            <span class="ua-lang-flag">🇹🇯</span>
+            <span class="ua-lang-code">TJ</span>
+            <span class="ua-lang-name">Тоҷикӣ</span>
+          </button>
+          <button class="ua-lang-btn" data-lang="en" onclick="uaSetLang('en')">
+            <span class="ua-lang-flag">🇬🇧</span>
+            <span class="ua-lang-code">EN</span>
+            <span class="ua-lang-name">English</span>
+          </button>
+        </div>
+      </div>
+
+      <button class="ua-menu-item" onclick="uaToggle('password')" id="uaItemPassword">
+        <span class="ua-menu-icon-wrap" style="background:rgba(107,79,58,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#6b4f3a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <span class="ua-menu-label" data-i18n="change_pass">Изменить пароль</span>
+        <svg class="ua-menu-chevron" id="uaChevronPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <!-- Inline: Change Password -->
+      <div class="ua-section ua-pass-section" id="uaSectionPassword" style="display:none">
+        <div class="up-alert" id="upAlert"></div>
+        <form id="passForm" novalidate>
+          <div class="up-field">
+            <label class="up-label" data-i18n="cur_pass">Текущий пароль</label>
+            <div class="up-input-wrap">
+              <input class="up-input" id="curPass" type="password" placeholder="Текущий пароль" autocomplete="current-password">
+              <button type="button" class="up-eye" onclick="toggleEye('curPass',this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="up-field">
+            <label class="up-label" data-i18n="new_pass">Новый пароль</label>
+            <div class="up-input-wrap">
+              <input class="up-input" id="newPass" type="password" placeholder="Минимум 6 символов" autocomplete="new-password">
+              <button type="button" class="up-eye" onclick="toggleEye('newPass',this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="up-field">
+            <label class="up-label" data-i18n="repeat_pass">Повторите пароль</label>
+            <div class="up-input-wrap">
+              <input class="up-input" id="newPass2" type="password" placeholder="Повторите пароль" autocomplete="new-password">
+              <button type="button" class="up-eye" onclick="toggleEye('newPass2',this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <button class="up-btn" id="savePassBtn" type="submit" data-i18n="save_pass">Сохранить пароль</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PWA: Install + Notifications -->
+    <div class="ua-pwa-row" id="uaPwaRow">
+      <button class="ua-pwa-btn ua-pwa-btn--install pwa-install-btn" id="uaInstallBtn" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span data-i18n="install_app">Установить приложение</span>
+      </button>
+      <button class="ua-pwa-btn ua-pwa-btn--notif pwa-notif-btn" id="uaNotifBtn" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span data-i18n="enable_notif">Включить уведомления</span>
+      </button>
+    </div>
+
+    <!-- Group 3: Admin (hidden by default) -->
+    <div class="ua-menu-group" id="uaAdminGroup" style="display:none">
+      <a class="ua-menu-item ua-menu-item--admin" href="/admin" target="_top">
+        <span class="ua-menu-icon-wrap" style="background:rgba(196,160,160,0.2)">⚙️</span>
+        <span class="ua-menu-label">Панель продавца</span>
+        <svg class="ua-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+
+    <!-- Logout -->
+    <button class="ua-logout-btn" onclick="doLogout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="17" height="17"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span data-i18n="logout">Выйти из аккаунта</span>
+    </button>
+
+    <!-- Footer -->
+    <div class="ua-footer">
+      <p class="ua-footer-copy">© 2026 GULREZ &nbsp;|&nbsp; Разработка <strong>SINO IT</strong></p>
+      <p class="ua-footer-love">Сделано с <span class="ua-footer-heart">♡</span></p>
+    </div>
+
+  </div><!-- /ua-menu-wrap -->
+</div><!-- /ua-main -->
+
+<!-- ══ Bottom Navigation ══ -->
+<nav class="app-bnav">
+  <a class="app-bnav-item" href="/#catalog">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+    </span>
+  </a>
+  <a class="app-bnav-item" href="/?openCart=1">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </span>
+  </a>
+  <a class="app-bnav-item app-bnav-center-item" href="/">
+    <span class="app-bnav-center-btn">
+      <img src="/images/sino.png" alt="GULREZ">
+    </span>
+  </a>
+  <a class="app-bnav-item" href="/?openWishlist=1">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </span>
+  </a>
+  <a class="app-bnav-item active" href="/user">
+    <span class="app-bnav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </span>
+  </a>
+</nav>
+
+<!-- ══ Review Prompt Modal ══ -->
+<div class="up-review-overlay" id="reviewPromptModal" style="display:none">
+  <div class="up-review-modal">
+    <div class="up-review-header">
+      <div class="up-review-confetti"><svg viewBox="0 0 24 24" fill="none" stroke="#c4a0a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><circle cx="12" cy="12" r="3"/><path d="M12 2a3 3 0 0 1 3 3c0 1.5-1.5 3-3 3s-3-1.5-3-3a3 3 0 0 1 3-3z"/><path d="M12 16a3 3 0 0 1 3 3c0 1.5-1.5 3-3 3s-3-1.5-3-3a3 3 0 0 1 3-3z"/><path d="M2 12a3 3 0 0 1 3-3c1.5 0 3 1.5 3 3s-1.5 3-3 3a3 3 0 0 1-3-3z"/><path d="M16 12a3 3 0 0 1 3-3c1.5 0 3 1.5 3 3s-1.5 3-3 3a3 3 0 0 1-3-3z"/></svg></div>
+      <h2 class="up-review-title" data-i18n="order_delivered">Заказ доставлен!</h2>
+      <p class="up-review-sub" data-i18n="share_impression">Поделитесь впечатлением — это помогает другим покупателям</p>
+    </div>
+    <div class="up-review-body">
+      <div class="up-review-stars" id="reviewStars">
+        <button class="up-star" data-val="1" onclick="setReviewRating(1)">★</button>
+        <button class="up-star" data-val="2" onclick="setReviewRating(2)">★</button>
+        <button class="up-star" data-val="3" onclick="setReviewRating(3)">★</button>
+        <button class="up-star" data-val="4" onclick="setReviewRating(4)">★</button>
+        <button class="up-star" data-val="5" onclick="setReviewRating(5)">★</button>
+      </div>
+      <div class="up-review-rating-label" id="reviewRatingLabel">Выберите оценку</div>
+      <textarea class="up-review-text" id="reviewText" placeholder="Расскажите о вашем заказе..." rows="4"></textarea>
+      <label class="up-review-photo-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span data-i18n="add_photo">Добавить фото</span>
+        <input type="file" id="reviewPhotoInput" accept="image/*" multiple style="display:none" onchange="previewReviewPhotos()">
+      </label>
+      <div class="up-review-photo-previews" id="reviewPhotoPreviews"></div>
+    </div>
+    <div class="up-review-footer">
+      <button class="up-review-skip" onclick="skipReview()" data-i18n="later">Позже</button>
+      <button class="up-review-submit" id="reviewSubmitBtn" onclick="submitReview()" data-i18n="leave_review">Оставить отзыв</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Order Detail Modal ══ -->
+<div class="up-modal-overlay" id="orderModal" style="display:none" onclick="closeOrderModal(event)">
+  <div class="up-modal">
+    <button class="up-modal-close" onclick="_stopUpChatPoll();document.getElementById('orderModal').style.display='none'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div id="orderModalContent"></div>
+  </div>
+</div>
+
+<script>
+
+// ── i18n ──
+const _UA_I18N = {
+  profile:         { ru: 'Профиль',                                       tj: 'Профил',                                              en: 'Profile' },
+  my_orders:       { ru: 'Мои заказы',                                    tj: 'Фармоишҳои ман',                                      en: 'My Orders' },
+  loyalty:         { ru: 'Программа лояльности',                          tj: 'Барномаи садоқат',                                    en: 'Loyalty Program' },
+  my_chats:        { ru: 'Мои чаты',                                      tj: 'Чатҳои ман',                                          en: 'My Chats' },
+  about_us:        { ru: 'О нас',                                         tj: 'Дар бораи мо',                                        en: 'About Us' },
+  contacts:        { ru: 'Контакты',                                      tj: 'Тамос',                                               en: 'Contacts' },
+  reviews:         { ru: 'Отзывы',                                        tj: 'Тақризҳо',                                            en: 'Reviews' },
+  change_lang:     { ru: 'Смена языка',                                   tj: 'Иваз кардани забон',                                  en: 'Change Language' },
+  change_pass:     { ru: 'Изменить пароль',                               tj: 'Иваз кардани парол',                                  en: 'Change Password' },
+  install_app:     { ru: 'Установить приложение',                         tj: 'Насб кардани барнома',                                en: 'Install App' },
+  enable_notif:    { ru: 'Включить уведомления',                          tj: 'Огоҳиҳоро фаъол кунед',                               en: 'Enable Notifications' },
+  logout:          { ru: 'Выйти из аккаунта',                             tj: 'Аз аккаунт баромадан',                                en: 'Log Out' },
+  cur_pass:        { ru: 'Текущий пароль',                                tj: 'Пароли ҷорӣ',                                         en: 'Current Password' },
+  new_pass:        { ru: 'Новый пароль',                                  tj: 'Пароли нав',                                          en: 'New Password' },
+  repeat_pass:     { ru: 'Повторите пароль',                              tj: 'Паролро такрор кунед',                                en: 'Repeat Password' },
+  save_pass:       { ru: 'Сохранить пароль',                              tj: 'Паролро захира кунед',                                en: 'Save Password' },
+  saving:          { ru: 'Сохранение...',                                 tj: 'Захира мешавад...',                                   en: 'Saving...' },
+  no_orders:       { ru: 'Заказов пока нет',                              tj: 'Фармоишҳо ҳоло нест',                                 en: 'No Orders Yet' },
+  choose_catalog:  { ru: 'Выберите букет в каталоге',                     tj: 'Дастаи гулро аз каталог интихоб кунед',               en: 'Choose a bouquet in the catalog' },
+  to_catalog:      { ru: 'В каталог',                                     tj: 'Ба каталог',                                          en: 'To Catalog' },
+  no_chats:        { ru: 'Нет активных чатов',                            tj: 'Чатҳои фаъол нест',                                   en: 'No Active Chats' },
+  chat_after_order:{ ru: 'Чат появится после оформления заказа',          tj: 'Чат пас аз сабти фармоиш пайдо мешавад',              en: 'Chat will appear after placing an order' },
+  loading_orders:  { ru: 'Загружаем заказы...',                           tj: 'Фармоишҳоро бор мекунем...',                          en: 'Loading orders...' },
+  loading:         { ru: 'Загружаем...',                                  tj: 'Бор мешавад...',                                      en: 'Loading...' },
+  order_delivered: { ru: 'Заказ доставлен!',                              tj: 'Фармоиш расонида шуд!',                               en: 'Order Delivered!' },
+  share_impression:{ ru: 'Поделитесь впечатлением — это помогает другим покупателям', tj: 'Таассуроти худро нашр кунед — ин ба харидорон кӯмак мекунад', en: 'Share your experience — it helps other customers' },
+  later:           { ru: 'Позже',                                         tj: 'Баъдтар',                                             en: 'Later' },
+  leave_review:    { ru: 'Оставить отзыв',                                tj: 'Тақриз гузоштан',                                     en: 'Leave Review' },
+  add_photo:       { ru: 'Добавить фото',                                 tj: 'Акс илова кунед',                                     en: 'Add Photo' },
+  err_no_cur:      { ru: 'Введите текущий пароль',                        tj: 'Пароли ҷориро ворид кунед',                           en: 'Enter current password' },
+  err_no_new:      { ru: 'Введите новый пароль',                          tj: 'Пароли навро ворид кунед',                            en: 'Enter new password' },
+  err_short:       { ru: 'Пароль — минимум 6 символов',                   tj: 'Парол — ҳадди ақал 6 аломат',                         en: 'Password must be at least 6 characters' },
+  err_mismatch:    { ru: 'Пароли не совпадают',                           tj: 'Паролҳо мувофиқ нестанд',                             en: 'Passwords do not match' },
+  pass_changed:    { ru: 'Пароль успешно изменён!',                       tj: 'Парол бомуваффақият иваз шуд!',                       en: 'Password changed successfully!' },
+  err_load:        { ru: 'Ошибка загрузки',                               tj: 'Хатои бор',                                           en: 'Loading error' },
+  err_net:         { ru: 'Ошибка сети',                                   tj: 'Хатои шабака',                                        en: 'Network error' },
+  sending:         { ru: 'Отправляем...',                                 tj: 'Мефиристем...',                                       en: 'Sending...' },
+  retry:           { ru: 'Повторить',                                     tj: 'Такрор кунед',                                        en: 'Retry' },
+  err_retry:       { ru: 'Ошибка — повторить',                            tj: 'Хато — такрор кунед',                                 en: 'Error — retry' },
+  choose_rating:   { ru: 'Выберите оценку',                               tj: 'Баҳо интихоб кунед',                                  en: 'Choose a rating' },
+  rate_1:          { ru: 'Плохо',                                         tj: 'Бад',                                                 en: 'Bad' },
+  rate_2:          { ru: 'Не очень',                                      tj: 'Хуб не',                                              en: 'Not great' },
+  rate_3:          { ru: 'Нормально',                                     tj: 'Муқаррарӣ',                                           en: 'OK' },
+  rate_4:          { ru: 'Хорошо',                                        tj: 'Хуб',                                                 en: 'Good' },
+  rate_5:          { ru: 'Отлично!',                                      tj: 'Аъло!',                                               en: 'Excellent!' },
+};
+let _uaLang = (() => {
+  const s = (localStorage.getItem('gulrezLang') || 'ru').toLowerCase();
+  return ['ru', 'tj', 'en'].includes(s) ? s : 'ru';
+})();
+function _t(key) {
+  const e = _UA_I18N[key]; return e ? (e[_uaLang] || e.ru || key) : key;
+}
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = _t(el.dataset.i18n); });
+}
+
+// ── Status labels ──
+const STATUS_LABEL = {
+  pending_payment:  { text: 'Ожидает оплаты',      color: '#d4a843', bg: 'rgba(212,168,67,0.1)' },
+  receipt_uploaded: { text: 'Чек отправлен',         color: '#3a7bd5', bg: 'rgba(58,123,213,0.1)' },
+  confirmed:        { text: 'Оплата подтверждена',   color: '#5a8a5a', bg: 'rgba(90,138,90,0.1)' },
+  in_progress:      { text: 'Собирают букет',         color: '#c97b6e', bg: 'rgba(201,123,110,0.1)' },
+  delivered:        { text: 'Доставлен',              color: '#5a8a5a', bg: 'rgba(90,138,90,0.1)' },
+  rejected:         { text: 'Отклонён',               color: '#c0392b', bg: 'rgba(192,57,43,0.1)' },
+  cancelled:        { text: 'Отменён',                color: '#999',    bg: 'rgba(0,0,0,0.06)' }
+};
+
+function statusBadge(status) {
+  const s = STATUS_LABEL[status] || { text: status, color: '#888', bg: '#f0f0f0' };
+  return `<span class="up-status-badge" style="color:${s.color};background:${s.bg}">${s.text}</span>`;
+}
+
+function tajikDate(dt) {
+  const d = (typeof dt === 'string' && dt.includes(' ') && !dt.endsWith('Z'))
+    ? new Date(dt.replace(' ', 'T') + 'Z')
+    : new Date(dt);
+  return d.toLocaleString('ru-RU', {
+    timeZone: 'Asia/Dushanbe',
+    day: '2-digit', month: 'long', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+// ── Section toggle ──
+const _uaOpenSections = new Set();
+function uaToggle(name) {
+  const secId = 'uaSection' + name.charAt(0).toUpperCase() + name.slice(1);
+  const el = document.getElementById(secId);
+  const chevron = document.getElementById('uaChevron' + name.charAt(0).toUpperCase() + name.slice(1));
+  if (!el) return;
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : 'block';
+  if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
+
+  if (!isOpen) {
+    if (name === 'orders') loadOrders();
+    if (name === 'points') loadPoints();
+    if (name === 'chats') loadChats();
+  }
+}
+
+// ── Load orders ──
+async function loadOrders() {
+  const loading = document.getElementById('ordersLoading');
+  const empty   = document.getElementById('ordersEmpty');
+  const list    = document.getElementById('ordersList');
+  if (loading) loading.style.display = 'flex';
+  if (empty)   empty.style.display = 'none';
+  if (list)    list.style.display  = 'none';
+  try {
+    const orders = await fetch('/api/user/orders', { credentials: 'same-origin' }).then(r => r.json());
+    if (loading) loading.style.display = 'none';
+    if (!orders.length) { if (empty) empty.style.display = 'flex'; return; }
+    const active = orders.filter(o => ['pending_payment','receipt_uploaded','confirmed','in_progress'].includes(o.status));
+    const badge = document.getElementById('uaOrdersBadge');
+    if (badge) { badge.textContent = active.length; badge.style.display = active.length ? 'flex' : 'none'; }
+    list.innerHTML = '';
+    orders.forEach(o => { list.appendChild(buildOrderCard(o)); });
+    list.style.display = 'block';
+    checkDeliveredReviewPrompt(orders);
+  } catch {
+    if (loading) loading.innerHTML = `<p style="color:#c0392b;padding:16px">${_t('err_load')}</p>`;
+  }
+}
+
+// ── Load chats ──
+async function loadChats() {
+  const loading = document.getElementById('chatsLoading');
+  const list    = document.getElementById('chatsList');
+  const empty   = document.getElementById('chatsEmpty');
+  if (loading) loading.style.display = 'flex';
+  if (list)    list.style.display = 'none';
+  if (empty)   empty.style.display = 'none';
+  try {
+    const orders = await fetch('/api/user/orders', { credentials: 'same-origin' }).then(r => r.json());
+    if (loading) loading.style.display = 'none';
+    const active = orders.filter(o => ['confirmed','in_progress','delivered'].includes(o.status));
+    if (!active.length) { if (empty) empty.style.display = 'flex'; return; }
+    list.innerHTML = active.map(o => `
+      <div class="ua-chat-order-item" onclick='openOrderModal(${JSON.stringify(o)})'>
+        <div class="ua-chat-order-num">${o.order_number}</div>
+        <div class="ua-chat-order-status">${(STATUS_LABEL[o.status]||{text:o.status}).text}</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16" style="flex-shrink:0;color:#aaa"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>`).join('');
+    list.style.display = 'block';
+  } catch {
+    if (loading) loading.innerHTML = `<p style="color:#c0392b;padding:16px">${_t('err_net')}</p>`;
+  }
+}
+
+function buildOrderCard(o) {
+  const div = document.createElement('div');
+  div.className = 'up-order-card';
+  div.onclick = () => openOrderModal(o);
+  const itemNames = o.items.slice(0, 2).map(i => i.product_name).join(', ') + (o.items.length > 2 ? ` +${o.items.length - 2}` : '');
+  div.innerHTML = `
+    <div class="up-order-card-head">
+      <div><div class="up-order-num">${o.order_number}</div><div class="up-order-date">${tajikDate(o.created_at)}</div></div>
+      ${statusBadge(o.status)}
+    </div>
+    <div class="up-order-items-preview">${itemNames || '—'}</div>
+    <div class="up-order-card-foot">
+      <span class="up-order-total">${o.total} TJS</span>
+      <span class="up-order-arrow">Подробнее →</span>
+    </div>`;
+  return div;
+}
+
+function openOrderModal(o) {
+  const modal   = document.getElementById('orderModal');
+  const content = document.getElementById('orderModalContent');
+  const steps = [
+    { status: 'pending_payment',  label: 'Ожидает оплаты' },
+    { status: 'receipt_uploaded', label: 'Чек получен' },
+    { status: 'confirmed',        label: 'Оплата подтверждена' },
+    { status: 'in_progress',      label: 'Собирают букет' },
+    { status: 'delivered',        label: 'Доставлен' }
+  ];
+  const statusOrder = ['pending_payment','receipt_uploaded','confirmed','in_progress','delivered'];
+  const currentIdx  = statusOrder.indexOf(o.status);
+  const isRejected  = o.status === 'rejected' || o.status === 'cancelled';
+
+  let timelineHtml = '<div class="up-order-timeline">';
+  if (isRejected) {
+    timelineHtml += `<div class="up-timeline-rejected">${statusBadge(o.status)}</div>`;
+    if (o.receipt_notes) timelineHtml += `<div class="up-timeline-notes">Причина: ${o.receipt_notes}</div>`;
+  } else {
+    steps.forEach((s, i) => {
+      const done = i <= currentIdx, active = i === currentIdx;
+      timelineHtml += `<div class="up-timeline-step ${done?'done':''} ${active?'active':''}">
+        <div class="up-timeline-dot">${done?'✓':''}</div>
+        ${i < steps.length-1 ? '<div class="up-timeline-line"></div>' : ''}
+        <span class="up-timeline-label">${s.label}</span>
+      </div>`;
+    });
+  }
+  timelineHtml += '</div>';
+
+  let itemsHtml = '<div class="up-modal-items">';
+  o.items.forEach(it => {
+    itemsHtml += `<div class="up-modal-item">
+      <span class="up-modal-item-name">${it.product_name}${it.quantity > 1 ? ` × ${it.quantity}` : ''}</span>
+      <span class="up-modal-item-price">${it.product_price * it.quantity} TJS</span>
+    </div>`;
+  });
+  itemsHtml += `<div class="up-modal-item up-modal-item-delivery"><span>Доставка</span><span>${o.delivery_fee} TJS</span></div>
+    <div class="up-modal-item up-modal-item-total"><span>Итого</span><strong>${o.total} TJS</strong></div></div>`;
+
+  const addr  = o.address || '—';
+  const phone = o.phone || '—';
+  const sched = o.schedule === 'later' && o.schedule_time
+    ? new Date(o.schedule_time).toLocaleString('ru-RU', { timeZone:'Asia/Dushanbe', day:'2-digit', month:'long', hour:'2-digit', minute:'2-digit' })
+    : 'Как можно скорее';
+
+  let receiptHtml = '';
+  if (o.status === 'pending_payment') {
+    receiptHtml = `<div class="up-modal-receipt-upload">
+      <p class="up-modal-receipt-title">Прикрепите чек оплаты</p>
+      <div class="up-modal-receipt-drop" onclick="document.getElementById('modalReceiptInput').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" width="32" height="32"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <p>Нажмите для выбора</p>
+        <input type="file" id="modalReceiptInput" accept="image/*" style="display:none" onchange="handleModalReceipt(this,'${o.order_number}')">
+      </div>
+      <div id="modalReceiptPreview" style="display:none"></div>
+      <button class="up-modal-submit-receipt" id="modalReceiptBtn" onclick="submitModalReceipt('${o.order_number}')" disabled>Отправить чек</button>
+    </div>`;
+  } else if (o.receipt_path) {
+    receiptHtml = `<div class="up-modal-receipt-view">
+      <p class="up-modal-receipt-label">Чек оплаты</p>
+      <img class="up-modal-receipt-img" src="/${o.receipt_path}" alt="Чек" onclick="window.open('/${o.receipt_path}','_blank')">
+      <p class="up-modal-receipt-status">${o.receipt_status==='approved'?'✓ Подтверждено':o.receipt_status==='rejected'?'✗ Отклонено':'⏳ На проверке'}</p>
+    </div>`;
+  }
+
+  const pointsHtml = o.points_earned > 0 && o.status === 'confirmed'
+    ? `<div class="up-modal-points-earned">+${o.points_earned} баллов начислено</div>`
+    : (o.status !== 'confirmed' ? `<div class="up-modal-points-hint">+${o.points_earned} баллов после подтверждения</div>` : '');
+
+  content.innerHTML = `
+    <div class="up-modal-header">
+      <div class="up-modal-order-num">${o.order_number}</div>
+      <div class="up-modal-order-date">${tajikDate(o.created_at)}</div>
+    </div>
+    ${timelineHtml}${itemsHtml}
+    <div class="up-modal-delivery-info">
+      <div class="up-modal-di-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.69 19a19.5 19.5 0 0 1-6-6"/></svg><span>${phone}</span>
+      </div>
+      <div class="up-modal-di-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>${addr}</span>
+      </div>
+      <div class="up-modal-di-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg><span>${sched}</span>
+      </div>
+    </div>
+    ${receiptHtml}${pointsHtml}
+    <div class="up-order-photos-section" id="upOrderPhotos">
+      <div class="up-order-photos-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="15" height="15"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Фото от магазина
+      </div>
+      <div class="up-order-photos-grid" id="upOrderPhotosGrid"><span class="up-photos-loading">Загрузка...</span></div>
+    </div>
+    <div class="up-order-chat-section">
+      <div class="up-order-chat-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="15" height="15"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Чат с магазином
+      </div>
+      <div class="up-chat-msgs" id="upChatMsgs"><div class="up-chat-empty">Загрузка...</div></div>
+      <div class="up-chat-img-preview" id="upChatImgPrev" style="display:none">
+        <img id="upChatImgPrevImg" src="" alt="">
+        <button class="up-chat-img-rm" onclick="upClearChatImg()">✕</button>
+      </div>
+      <div class="up-chat-form">
+        <label class="up-chat-attach" title="Прикрепить фото">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <input type="file" id="upChatImgFile" accept="image/*" style="display:none" onchange="upPreviewChatImg()">
+        </label>
+        <textarea class="up-chat-input" id="upChatText" placeholder="Написать в магазин..." rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();upSendChatMsg('${o.order_number}')}"></textarea>
+        <button class="up-chat-send" onclick="upSendChatMsg('${o.order_number}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>`;
+  modal.style.display = 'flex';
+  window._modalReceiptFile = null;
+  loadUpOrderPhotos(o.order_number);
+  _startUpChatPoll(o.order_number);
+}
+
+// ── Order photos ──
+async function loadUpOrderPhotos(orderNum) {
+  const grid = document.getElementById('upOrderPhotosGrid');
+  const section = document.getElementById('upOrderPhotos');
+  if (!grid) return;
+  try {
+    const photos = await fetch(`/api/orders/${encodeURIComponent(orderNum)}/photos`, { credentials: 'same-origin' }).then(r => r.json());
+    if (!photos.length) { if (section) section.style.display = 'none'; return; }
+    if (section) section.style.display = 'block';
+    grid.innerHTML = photos.map(p => `<div class="up-op-item" onclick="window.open('/${p.photo_path}','_blank')">
+      <img src="/${p.photo_path}" alt="${p.caption || ''}">
+      ${p.caption ? `<div class="up-op-caption">${p.caption}</div>` : ''}
+    </div>`).join('');
+  } catch { if (section) section.style.display = 'none'; }
+}
+
+// ── Chat poll ──
+let _upChatPollTimer = null;
+function _startUpChatPoll(orderNum) { _stopUpChatPoll(); loadUpChatMsgs(orderNum); _upChatPollTimer = setInterval(() => loadUpChatMsgs(orderNum), 4000); }
+function _stopUpChatPoll() { if (_upChatPollTimer) { clearInterval(_upChatPollTimer); _upChatPollTimer = null; } }
+function _escHtmlUp(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function loadUpChatMsgs(orderNum) {
+  const el = document.getElementById('upChatMsgs');
+  if (!el) { _stopUpChatPoll(); return; }
+  try {
+    const msgs = await fetch(`/api/orders/${encodeURIComponent(orderNum)}/messages`, { credentials: 'same-origin' }).then(r => r.json());
+    const wasAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+    if (!msgs.length) { el.innerHTML = '<div class="up-chat-empty">Сообщений пока нет. Напишите нам!</div>'; return; }
+    el.innerHTML = msgs.map(m => {
+      const isAdmin = m.sender_type === 'admin';
+      const time = new Date(m.created_at + (m.created_at.endsWith('Z') ? '' : 'Z')).toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit', timeZone:'Asia/Dushanbe' });
+      const imgH = m.image_path ? `<img src="/${m.image_path}" class="up-chat-msg-img" onclick="window.open('/${m.image_path}','_blank')" alt="">` : '';
+      return `<div class="up-chat-msg ${isAdmin?'up-chat-msg--admin':'up-chat-msg--user'}">
+        <div class="up-chat-msg-inner">
+          ${imgH}
+          ${m.message ? `<div class="up-chat-bubble">${_escHtmlUp(m.message)}</div>` : ''}
+          <div class="up-chat-meta">${isAdmin?'Магазин':'Вы'} · ${time}</div>
+        </div>
+      </div>`;
+    }).join('');
+    if (wasAtBottom) el.scrollTop = el.scrollHeight;
+  } catch {}
+}
+
+function upPreviewChatImg() {
+  const file = document.getElementById('upChatImgFile')?.files[0];
+  if (!file) return;
+  const prev = document.getElementById('upChatImgPrev'), img = document.getElementById('upChatImgPrevImg');
+  if (prev && img) { img.src = URL.createObjectURL(file); prev.style.display = 'flex'; }
+}
+function upClearChatImg() {
+  const inp = document.getElementById('upChatImgFile');
+  if (inp) inp.value = '';
+  const prev = document.getElementById('upChatImgPrev');
+  if (prev) prev.style.display = 'none';
+}
+async function upSendChatMsg(orderNum) {
+  const textEl = document.getElementById('upChatText');
+  const file   = document.getElementById('upChatImgFile')?.files[0];
+  const text   = textEl?.value.trim();
+  if (!text && !file) return;
+  const fd = new FormData();
+  if (text) fd.append('message', text);
+  if (file) fd.append('image', file);
+  try {
+    await fetch(`/api/orders/${encodeURIComponent(orderNum)}/messages`, { method: 'POST', credentials: 'same-origin', body: fd });
+    if (textEl) textEl.value = '';
+    upClearChatImg();
+    loadUpChatMsgs(orderNum);
+  } catch {}
+}
+
+// ── Receipt upload ──
+let _modalReceiptFile = null;
+function handleModalReceipt(input, orderNum) {
+  const file = input.files[0];
+  if (!file) return;
+  _modalReceiptFile = file;
+  const btn = document.getElementById('modalReceiptBtn');
+  if (btn) btn.disabled = false;
+  const preview = document.getElementById('modalReceiptPreview');
+  if (preview && file.type.startsWith('image/')) {
+    preview.innerHTML = `<img src="${URL.createObjectURL(file)}" style="max-width:100%;border-radius:8px;margin-top:10px">`;
+    preview.style.display = 'block';
+  }
+  const drop = document.querySelector('.up-modal-receipt-drop');
+  if (drop) drop.style.borderColor = 'var(--success)';
+}
+async function submitModalReceipt(orderNum) {
+  if (!_modalReceiptFile) return;
+  const btn = document.getElementById('modalReceiptBtn');
+  btn.disabled = true; btn.textContent = _t('sending');
+  const fd = new FormData();
+  fd.append('receipt', _modalReceiptFile);
+  try {
+    const res  = await fetch(`/api/orders/${encodeURIComponent(orderNum)}/receipt`, { method: 'POST', credentials: 'same-origin', body: fd });
+    const data = await res.json();
+    if (data.ok) { document.getElementById('orderModal').style.display = 'none'; loadOrders(); }
+    else { btn.disabled = false; btn.textContent = _t('retry'); }
+  } catch { btn.disabled = false; btn.textContent = _t('err_retry'); }
+}
+function closeOrderModal(e) {
+  if (e.target === document.getElementById('orderModal')) { _stopUpChatPoll(); document.getElementById('orderModal').style.display = 'none'; }
+}
+
+// ── Points ──
+const LOY_TIERS = [
+  { id: 'tierVip',    min: 5000, label: 'VIP' },
+  { id: 'tierGold',   min: 2000, label: 'Золото' },
+  { id: 'tierSilver', min: 200,  label: 'Серебряный' },
+  { id: 'tierBronze', min: 50,   label: 'Бронзовый' },
+];
+function _loyTierLabel(life) {
+  for (const t of LOY_TIERS) if (life >= t.min) return t.label;
+  return 'Начинающий';
+}
+function _highlightTier(life) {
+  LOY_TIERS.forEach(t => {
+    const el = document.getElementById(t.id);
+    if (el) el.classList.toggle('up-tier-item--active', life >= t.min && (LOY_TIERS.find(x => x.min > t.min && life >= x.min) === undefined));
+  });
+}
+
+async function loadPoints() {
+  try {
+    const d = await fetch('/api/user/points', { credentials: 'same-origin' }).then(r => r.json());
+    const pts = d.points || 0, life = d.lifetime || 0;
+    const mEl = document.getElementById('pointsMain'); if (mEl) mEl.textContent = pts;
+    const lEl = document.getElementById('pointsLifetime'); if (lEl) lEl.textContent = life;
+    _highlightTier(life);
+    loadLoyHistory();
+  } catch {}
+}
+
+// ── Loyalty tabs ──
+let _loyActiveTab = 'history';
+function loyTab(tab) {
+  _loyActiveTab = tab;
+  document.getElementById('loyPanelHistory').style.display = tab === 'history' ? 'block' : 'none';
+  document.getElementById('loyPanelRating').style.display  = tab === 'rating'  ? 'block' : 'none';
+  document.getElementById('loyTabHistory').classList.toggle('active', tab === 'history');
+  document.getElementById('loyTabRating').classList.toggle('active',  tab === 'rating');
+  if (tab === 'rating') loadLoyRating();
+}
+
+async function loadLoyHistory() {
+  const loading = document.getElementById('loyHistoryLoading');
+  const list    = document.getElementById('loyHistoryList');
+  const empty   = document.getElementById('loyHistoryEmpty');
+  if (loading) loading.style.display = 'flex';
+  if (list) list.style.display = 'none';
+  if (empty) empty.style.display = 'none';
+  try {
+    const rows = await fetch('/api/user/points/history', { credentials: 'same-origin' }).then(r => r.json());
+    if (loading) loading.style.display = 'none';
+    if (!rows.length) { if (empty) empty.style.display = 'block'; return; }
+    list.innerHTML = rows.map(r => {
+      const d = new Date((r.created_at + (r.created_at.endsWith('Z') ? '' : 'Z')));
+      const dateStr = d.toLocaleDateString('ru-RU', { timeZone: 'Asia/Dushanbe', day: '2-digit', month: '2-digit', year: 'numeric' });
+      return `<div class="up-hist-item">
+        <div class="up-hist-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+        <div class="up-hist-info">
+          <div class="up-hist-title">Покупка заказа ${r.order_number}</div>
+          <div class="up-hist-date">${dateStr}</div>
+        </div>
+        <div class="up-hist-pts">+${r.points_earned} б.</div>
+      </div>`;
+    }).join('');
+    list.style.display = 'block';
+  } catch {
+    if (loading) loading.style.display = 'none';
+    if (empty) empty.style.display = 'block';
+  }
+}
+
+function _rankIcon(rank) {
+  if (rank === 1) return `<span class="up-rank-icon up-rank-icon--1">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="#d4a843" stroke="none"><path d="M2 19h20v2H2zM12 2L7 9 2 6v11h20V6l-5 3-5-7z"/></svg>
+  </span>`;
+  if (rank === 2) return `<span class="up-rank-icon up-rank-icon--2">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#a8a9ad" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="7"/><path d="M9.5 7.5L8 4h8l-1.5 3.5"/><path d="M12 8v10"/></svg>
+  </span>`;
+  if (rank === 3) return `<span class="up-rank-icon up-rank-icon--3">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#cd7f32" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="7"/><path d="M9.5 7.5L8 4h8l-1.5 3.5"/><path d="M12 8v10"/></svg>
+  </span>`;
+  return `<span class="up-rank-num">${rank}</span>`;
+}
+
+function _numEnd(n) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return 'участник';
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return 'участника';
+  return 'участников';
+}
+
+function _ratingAvatar(u) {
+  return u.avatar
+    ? `<img src="/${u.avatar}" alt="${_escHtmlUp(u.login)}" class="up-rating-avatar">`
+    : `<div class="up-rating-avatar up-rating-avatar--text">${u.login.charAt(0).toUpperCase()}</div>`;
+}
+
+async function loadLoyRating() {
+  const loading = document.getElementById('loyRatingLoading');
+  const meta    = document.getElementById('loyRatingMeta');
+  const list    = document.getElementById('loyRatingList');
+  const myCard  = document.getElementById('loyMyRankCard');
+  if (loading) loading.style.display = 'flex';
+  [list, meta, myCard].forEach(el => { if (el) el.style.display = 'none'; });
+  try {
+    const data = await fetch('/api/loyalty/leaderboard', { credentials: 'same-origin' }).then(r => r.json());
+    if (loading) loading.style.display = 'none';
+    const lb = data.leaderboard || [];
+    const total = data.total || lb.length;
+
+    if (meta) {
+      meta.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="13" height="13"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> ${total} ${_numEnd(total)} · Топ по заработанным баллам`;
+      meta.style.display = 'flex';
+    }
+
+    const maxPts = lb.length ? lb[0].lifetime_points : 1;
+    list.innerHTML = lb.map((u, i) => {
+      const rank = i + 1;
+      const isMe = u.id === data.myId;
+      const pct  = Math.round((u.lifetime_points / maxPts) * 100);
+      return `<div class="up-rating-item${rank === 1 ? ' up-rating-item--first' : ''}${isMe ? ' up-rating-item--me' : ''}">
+        <div class="up-rating-rank-col">${_rankIcon(rank)}</div>
+        ${_ratingAvatar(u)}
+        <div class="up-rating-info">
+          <div class="up-rating-name">${_escHtmlUp(u.login)}${isMe ? ' <span class="up-rating-you">ВЫ</span>' : ''}</div>
+          <div class="up-rating-tier-row">
+            <span class="up-rating-tier">${_loyTierLabel(u.lifetime_points)}</span>
+          </div>
+          <div class="up-rating-bar-wrap"><div class="up-rating-bar" style="width:${pct}%"></div></div>
+        </div>
+        <div class="up-rating-score-wrap">
+          <div class="up-rating-score-val">${u.lifetime_points}</div>
+          <div class="up-rating-score-sub">б.</div>
+        </div>
+      </div>`;
+    }).join('');
+    list.style.display = 'block';
+
+    // User outside top 10
+    if (data.myEntry && data.myRank && data.myRank > lb.length && total > 0) {
+      const me = data.myEntry;
+      const percentile = Math.ceil((data.myRank / total) * 100);
+      myCard.innerHTML = `
+        <div class="up-my-rank-sep"><span>Ваше место</span></div>
+        <div class="up-rating-item up-rating-item--me">
+          <div class="up-rating-rank-col">${_rankIcon(data.myRank)}</div>
+          ${_ratingAvatar(me)}
+          <div class="up-rating-info">
+            <div class="up-rating-name">${_escHtmlUp(me.login)} <span class="up-rating-you">ВЫ</span></div>
+            <div class="up-rating-tier-row"><span class="up-rating-tier">${_loyTierLabel(me.lifetime_points)}</span></div>
+            <div class="up-rating-bar-wrap"><div class="up-rating-bar" style="width:${Math.round((me.lifetime_points/(maxPts||1))*100)}%"></div></div>
+          </div>
+          <div class="up-rating-score-wrap">
+            <div class="up-rating-score-val">${me.lifetime_points}</div>
+            <div class="up-rating-score-sub">б.</div>
+          </div>
+        </div>
+        <div class="up-percentile-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <div>Вы в топ <strong>${percentile}%</strong> участников<br><span>Продолжайте покупать, чтобы подняться выше</span></div>
+        </div>`;
+      myCard.style.display = 'block';
+    }
+  } catch {
+    if (loading) loading.style.display = 'none';
+  }
+}
+
+// ── Avatar ──
+function _setAvatarDisplay(avatarUrl, login) {
+  const el = document.getElementById('upAvatar');
+  if (!el) return;
+  if (avatarUrl) {
+    el.innerHTML = `<img src="/${avatarUrl}" alt="${login}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    el.classList.add('has-avatar');
+  } else {
+    el.textContent = login.charAt(0).toUpperCase();
+    el.classList.remove('has-avatar');
+  }
+}
+async function uploadAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 4 * 1024 * 1024) { input.value = ''; return; }
+  const wrap = document.getElementById('upAvatarWrap');
+  if (wrap) wrap.classList.add('uploading');
+  const fd = new FormData();
+  fd.append('avatar', file);
+  try {
+    const res  = await fetch('/api/user/avatar', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.ok) _setAvatarDisplay(data.avatar, document.getElementById('upName').textContent);
+  } catch {}
+  finally { if (wrap) wrap.classList.remove('uploading'); input.value = ''; }
+}
+
+// ── Password ──
+function toggleEye(id, btn) {
+  const inp = document.getElementById(id);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.innerHTML = show
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>`;
+}
+function showAlert(msg, type = 'error') {
+  const el = document.getElementById('upAlert');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'up-alert up-alert--' + type + ' visible';
+  setTimeout(() => el.classList.remove('visible'), 4000);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const pf = document.getElementById('passForm');
+  if (pf) pf.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const cur = document.getElementById('curPass').value;
+    const nw  = document.getElementById('newPass').value;
+    const nw2 = document.getElementById('newPass2').value;
+    if (!cur) return showAlert(_t('err_no_cur'));
+    if (!nw)  return showAlert(_t('err_no_new'));
+    if (nw.length < 6) return showAlert(_t('err_short'));
+    if (nw !== nw2)    return showAlert(_t('err_mismatch'));
+    const btn = document.getElementById('savePassBtn');
+    btn.disabled = true; btn.textContent = _t('saving');
+    try {
+      const res  = await fetch('/api/user/change-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword: cur, newPassword: nw })
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) { showAlert(_t('pass_changed'), 'success'); pf.reset(); }
+      else showAlert(data.error || _t('err_net'));
+    } catch { showAlert(_t('err_net')); }
+    finally { btn.disabled = false; btn.textContent = _t('save_pass'); }
+  });
+});
+
+// ── Language switcher ──
+function _uaToast(msg) {
+  let t = document.getElementById('uaToastEl');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'uaToastEl';
+    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(8px);background:#3d2b2b;color:#fff;padding:9px 20px;border-radius:20px;font-size:13px;font-family:Lato,sans-serif;opacity:0;transition:opacity 0.25s,transform 0.25s;z-index:9999;pointer-events:none;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._tmr);
+  t._tmr = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(8px)'; }, 2000);
+}
+
+function uaSetLang(lang) {
+  _uaLang = lang;
+  localStorage.setItem('gulrezLang', lang.toUpperCase());
+  document.querySelectorAll('.ua-lang-btn').forEach(b => {
+    b.classList.toggle('ua-lang-btn--active', b.dataset.lang === lang);
+  });
+  applyLang();
+  const names = { ru: 'Русский', tj: 'Тоҷикӣ', en: 'English' };
+  _uaToast('Язык: ' + (names[lang] || lang.toUpperCase()));
+}
+
+function _uaInitLang() {
+  _uaLang = (localStorage.getItem('gulrezLang') || 'ru').toLowerCase();
+  if (!['ru', 'tj', 'en'].includes(_uaLang)) _uaLang = 'ru';
+  document.querySelectorAll('.ua-lang-btn').forEach(b => {
+    b.classList.toggle('ua-lang-btn--active', b.dataset.lang === _uaLang);
+  });
+  applyLang();
+}
+
+// ── Logout ──
+async function doLogout() {
+  await fetch('/logout', { method: 'POST' });
+  window.location.href = '/login.html';
+}
+
+// ── Init ──
+(async function init() {
+  const res  = await fetch('/api/me');
+  const data = await res.json();
+  if (!data.loggedIn) {
+    document.getElementById('uaGuest').style.display = 'flex';
+    return;
+  }
+  document.getElementById('uaMain').style.display = 'block';
+  _setAvatarDisplay(data.avatar, data.login);
+  document.getElementById('upName').textContent  = data.login;
+  document.getElementById('upPhone').textContent = data.phone || 'Телефон не указан';
+  document.title = data.login + ' — GULREZ';
+
+  if (data.role === 'admin') {
+    const ag = document.getElementById('uaAdminGroup');
+    if (ag) ag.style.display = 'block';
+  }
+
+  loadPoints();
+  _uaInitLang();
+  // Auto-open orders if hash
+  if (window.location.hash === '#orders') uaToggle('orders');
+})();
+
+// ══════════════════════════════════════════════════
+//  REVIEW PROMPT
+// ══════════════════════════════════════════════════
+const REVIEW_DONE_KEY = 'gulrez_reviewed_orders';
+function getReviewedOrders() { try { return JSON.parse(localStorage.getItem(REVIEW_DONE_KEY) || '[]'); } catch { return []; } }
+function markOrderReviewed(orderNum) {
+  const done = getReviewedOrders();
+  if (!done.includes(orderNum)) { done.push(orderNum); localStorage.setItem(REVIEW_DONE_KEY, JSON.stringify(done)); }
+}
+function checkDeliveredReviewPrompt(orders) {
+  const done = getReviewedOrders();
+  const toReview = orders.find(o => o.status === 'delivered' && !done.includes(o.order_number));
+  if (toReview) showReviewPrompt(toReview.order_number);
+}
+let _reviewOrderNum = null, _reviewRating = 0;
+function showReviewPrompt(orderNum) { _reviewOrderNum = orderNum; _reviewRating = 0; setReviewRating(0); document.getElementById('reviewPromptModal').style.display = 'flex'; }
+function setReviewRating(val) {
+  _reviewRating = val;
+  const label = document.getElementById('reviewRatingLabel');
+  if (label) label.textContent = val ? _t('rate_' + val) : _t('choose_rating');
+  document.querySelectorAll('.up-star').forEach(btn => { btn.classList.toggle('active', parseInt(btn.dataset.val) <= val); });
+}
+function previewReviewPhotos() {
+  const inp = document.getElementById('reviewPhotoInput'), container = document.getElementById('reviewPhotoPreviews');
+  if (!inp || !container) return;
+  container.innerHTML = '';
+  Array.from(inp.files).slice(0, 3).forEach(f => { const img = document.createElement('img'); img.src = URL.createObjectURL(f); img.className = 'up-review-photo-thumb'; container.appendChild(img); });
+}
+function skipReview() { if (_reviewOrderNum) markOrderReviewed(_reviewOrderNum); document.getElementById('reviewPromptModal').style.display = 'none'; }
+async function submitReview() {
+  if (!_reviewRating) { document.getElementById('reviewRatingLabel').textContent = '⚠ ' + _t('choose_rating'); return; }
+  const text = document.getElementById('reviewText')?.value.trim();
+  if (!text) { document.getElementById('reviewText').style.borderColor = '#c0392b'; return; }
+  const btn = document.getElementById('reviewSubmitBtn');
+  btn.disabled = true; btn.textContent = _t('sending');
+  const fd = new FormData();
+  fd.append('rating', _reviewRating);
+  fd.append('text', text);
+  const photoInp = document.getElementById('reviewPhotoInput');
+  if (photoInp?.files) Array.from(photoInp.files).slice(0, 3).forEach(f => fd.append('photos', f));
+  try {
+    const res = await fetch('/api/reviews', { method: 'POST', credentials: 'same-origin', body: fd });
+    const data = await res.json();
+    if (res.ok && data.id) {
+      if (_reviewOrderNum) markOrderReviewed(_reviewOrderNum);
+      const modal = document.getElementById('reviewPromptModal');
+      if (modal) {
+        modal.innerHTML = `<div class="up-review-modal up-review-modal--success">
+          <div class="up-review-success-icon">✓</div>
+          <h2 class="up-review-title">Спасибо за отзыв!</h2>
+          <p class="up-review-sub">Ваш отзыв опубликован</p>
+          <button class="up-review-submit" onclick="document.getElementById('reviewPromptModal').style.display='none'">Закрыть</button>
+        </div>`;
+        setTimeout(() => { modal.style.display = 'none'; modal.innerHTML = ''; }, 3500);
+      }
+    } else { btn.disabled = false; btn.textContent = _t('leave_review'); showAlert(data.error || _t('err_net')); }
+  } catch { btn.disabled = false; btn.textContent = _t('leave_review'); showAlert(_t('err_net')); }
+}
+</script>
+
+<script src="/js/push.js"></script>
+<script src="/js/pwa.js"></script>
+<script>
+// ── Unread chat badge ─────────────────────────────────────────
+async function loadChatsBadge() {
+  try {
+    const d = await fetch('/api/user/unread-messages', { credentials: 'same-origin' }).then(r => r.json());
+    const badge = document.getElementById('uaChatsBadge');
+    if (!badge) return;
+    if (d.count > 0) { badge.textContent = d.count > 9 ? '9+' : d.count; badge.style.display = 'flex'; }
+    else badge.style.display = 'none';
+  } catch {}
+}
+loadChatsBadge();
+setInterval(loadChatsBadge, 60000);
+
+// ── Push subscribe for users ──────────────────────────────────
+// Only subscribe if logged in (me endpoint returns loggedIn:true)
+// If already has permission, silently refresh subscription. No auto-prompt.
+fetch('/api/me', { credentials: 'same-origin' }).then(r => r.json()).then(d => {
+  if (d.loggedIn) setTimeout(() => pushRegister(), 2000);
+}).catch(() => {});
+// Update notification button state after push.js + pwa.js are loaded
+setTimeout(() => { if (typeof updateNotifBtns === 'function') updateNotifBtns(); }, 100);
+</script>
+</body>
+</html>

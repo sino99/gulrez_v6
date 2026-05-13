@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Нет сети — GULREZ</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icons/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#c97b6e">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #fdf8f4;
+    color: #3a2a20;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+  }
+  .offline-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 20px rgba(201,123,110,0.25);
+  }
+  .offline-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #3a2a20;
+  }
+  p {
+    font-size: 15px;
+    color: #7a5a50;
+    margin-bottom: 32px;
+    line-height: 1.5;
+    max-width: 280px;
+  }
+  .btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #c97b6e, #b8604e);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 14px;
+    transition: opacity 0.2s;
+  }
+  .btn:hover { opacity: 0.88; }
+  .home-link {
+    display: block;
+    font-size: 14px;
+    color: #c97b6e;
+    text-decoration: none;
+    margin-top: 4px;
+  }
+  .home-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+  <img src="/icons/web-app-manifest-192x192.png" alt="GULREZ" class="offline-logo" onerror="this.style.display='none'">
+  <div class="offline-icon">📡</div>
+  <h1>Нет подключения к интернету</h1>
+  <p>Проверьте соединение и попробуйте снова. Ваши данные в безопасности.</p>
+  <button class="btn" onclick="location.reload()">Попробовать снова</button>
+  <a class="home-link" href="/">На главную</a>
+</body>
+</html>

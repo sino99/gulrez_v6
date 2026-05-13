@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <title>Загрузка… — GULREZ</title>
+  <link rel="icon" href="/icons/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c97b6e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,700;1,400&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/product.css">
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="ph" id="ph">
+  <button class="ph-back" onclick="history.length>1 ? history.back() : location.href='/'" aria-label="Назад">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <div class="ph-title" id="phTitle"></div>
+  <button class="ph-share" id="phShare" aria-label="Поделиться">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+  </button>
+</header>
+
+<!-- ══ GALLERY ══ -->
+<div class="pg-wrap" id="pgWrap">
+  <div class="pg-track" id="pgTrack"></div>
+  <div class="pg-tag" id="pgTag" style="display:none"></div>
+  <div class="pg-disc" id="pgDisc" style="display:none"></div>
+  <div class="pg-counter" id="pgCounter" style="display:none"></div>
+</div>
+<div class="pg-dots" id="pgDots"></div>
+
+<!-- ══ PRODUCT INFO ══ -->
+<div class="pi" id="pi">
+  <div class="pi-color" id="piColor"></div>
+  <div class="pi-name" id="piName">Загрузка…</div>
+  <div class="pi-meta">
+    <div class="pi-likes" id="piLikes"></div>
+    <div class="pi-status-badge" id="piStatus"></div>
+  </div>
+  <div class="pi-price-wrap" id="piPrice"></div>
+</div>
+
+<!-- ══ EXPANDABLE SECTIONS ══ -->
+<div class="ps-list" id="psList"></div>
+
+<!-- ══ TOAST ══ -->
+<div class="p-toast" id="pToast"></div>
+
+<!-- ══ FIXED CTA ══ -->
+<div class="pb-cta" id="pbCta" style="display:none">
+  <button class="pb-add-btn" id="pbAddBtn" onclick="addToCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    Добавить в корзину
+  </button>
+  <button class="pb-heart-btn" id="pbHeartBtn" onclick="toggleHeart()" aria-label="В избранное">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+  </button>
+</div>
+
+<script>
+'use strict';
+
+let product = null;
+let currentSlide = 0;
+let totalSlides  = 0;
+let startX = 0;
+let isDragging = false;
+
+/* ── Get product ID from URL ── */
+const productId = window.location.pathname.split('/').filter(Boolean).pop();
+
+/* ── LocalStorage cart ── */
+function lsCart() {
+  try { return JSON.parse(localStorage.getItem('gulrez_ls_cart') || '[]'); } catch { return []; }
+}
+function lsSaveCart(a) { localStorage.setItem('gulrez_ls_cart', JSON.stringify(a)); }
+
+function addToCart() {
+  if (!product) return;
+  const cart = lsCart();
+  const ex = cart.find(c => c.id === product.id);
+  if (ex) ex.qty = (ex.qty || 1) + 1;
+  else cart.push({ id: product.id, qty: 1 });
+  lsSaveCart(cart);
+  const btn = document.getElementById('pbAddBtn');
+  btn.classList.add('added');
+  btn.textContent = 'Добавлено в корзину ✓';
+  setTimeout(() => {
+    btn.classList.remove('added');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Добавить в корзину`;
+  }, 2000);
+  showToast('«' + product.title + '» добавлен в корзину 🛒');
+}
+
+/* ── Favorites (API for logged-in, localStorage for guests) ── */
+let _prodLoggedIn = false;
+
+function lsFavs() {
+  try { return new Set(JSON.parse(localStorage.getItem('gulrez_ls_favs') || '[]')); } catch { return new Set(); }
+}
+function lsSaveFavs(s) { localStorage.setItem('gulrez_ls_favs', JSON.stringify([...s])); }
+
+async function toggleHeart() {
+  if (!product) return;
+  if (_prodLoggedIn) {
+    try {
+      const r = await fetch('/api/favorites/' + product.id, { method: 'POST', credentials: 'same-origin' });
+      const d = await r.json();
+      if (d.error) { showToast(d.error); return; }
+      syncHeart(d.liked);
+      showToast(d.liked ? '❤️ Добавлено в избранное' : 'Убрано из избранного');
+    } catch { showToast('Ошибка соединения'); }
+  } else {
+    const favs = lsFavs();
+    const liked = favs.has(product.id);
+    if (liked) favs.delete(product.id); else favs.add(product.id);
+    lsSaveFavs(favs);
+    syncHeart(!liked);
+    showToast(!liked ? '❤️ Добавлено в избранное' : 'Убрано из избранного');
+  }
+}
+function syncHeart(liked) {
+  const btn = document.getElementById('pbHeartBtn');
+  if (btn) btn.classList.toggle('liked', liked);
+}
+
+/* ── Gallery ── */
+function goSlide(n) {
+  currentSlide = Math.max(0, Math.min(n, totalSlides - 1));
+  document.getElementById('pgTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
+  document.querySelectorAll('.pg-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+  const counter = document.getElementById('pgCounter');
+  if (counter) counter.textContent = (currentSlide + 1) + ' / ' + totalSlides;
+}
+
+function initGallerySwipe() {
+  const wrap = document.getElementById('pgWrap');
+  wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isDragging = true; }, { passive: true });
+  wrap.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    const base = -currentSlide * 100;
+    const offset = (dx / wrap.offsetWidth) * 100;
+    document.getElementById('pgTrack').style.transition = 'none';
+    document.getElementById('pgTrack').style.transform = `translateX(${base + offset}%)`;
+  }, { passive: true });
+  wrap.addEventListener('touchend', e => {
+    if (!isDragging) return;
+    isDragging = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    document.getElementById('pgTrack').style.transition = '';
+    if (Math.abs(dx) > 50) goSlide(dx < 0 ? currentSlide + 1 : currentSlide - 1);
+    else goSlide(currentSlide);
+  });
+}
+
+/* ── Expandable sections ── */
+function toggleSection(btn) {
+  const ps = btn.closest('.ps');
+  const isOpen = ps.classList.contains('open');
+  document.querySelectorAll('.ps.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) ps.classList.add('open');
+}
+
+/* ── Share ── */
+document.getElementById('phShare').addEventListener('click', async () => {
+  if (!product) return;
+  const data = { title: 'GULREZ — ' + product.title, text: product.desc, url: window.location.href };
+  if (navigator.share) {
+    try { await navigator.share(data); } catch(_) {}
+  } else {
+    await navigator.clipboard.writeText(window.location.href).catch(() => {});
+    showToast('Ссылка скопирована!');
+  }
+});
+
+/* ── Scroll: show title in header ── */
+window.addEventListener('scroll', () => {
+  const pi = document.getElementById('pi');
+  if (!pi) return;
+  const show = window.scrollY > pi.offsetTop - 70;
+  document.getElementById('phTitle').classList.toggle('visible', show);
+}, { passive: true });
+
+/* ── Toast ── */
+function showToast(msg) {
+  const t = document.getElementById('pToast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('visible'), 2200);
+}
+
+/* ── Render product ── */
+function render(p) {
+  product = p;
+  document.title = p.title + ' — GULREZ';
+  document.getElementById('phTitle').textContent = p.title;
+
+  // Gallery
+  const track = document.getElementById('pgTrack');
+  totalSlides = p.images.length;
+  track.innerHTML = p.images.map(src =>
+    `<div class="pg-slide"><img src="${src}" alt="${esc(p.title)}" loading="eager" onerror="this.src='/images/logo.png'"></div>`
+  ).join('');
+  const dots = document.getElementById('pgDots');
+  if (totalSlides > 1) {
+    dots.innerHTML = p.images.map((_, i) =>
+      `<button class="pg-dot${i===0?' active':''}" onclick="goSlide(${i})"></button>`
+    ).join('');
+    document.getElementById('pgCounter').style.display = 'block';
+    document.getElementById('pgCounter').textContent = '1 / ' + totalSlides;
+  } else {
+    dots.style.display = 'none';
+  }
+  initGallerySwipe();
+
+  // Tag
+  if (p.tag) {
+    const tagEl = document.getElementById('pgTag');
+    tagEl.textContent = p.tag;
+    tagEl.style.background = p.tagBg || '#c17b7b';
+    tagEl.style.display = 'block';
+  }
+  // Discount badge
+  if (p.discount > 0) {
+    const discEl = document.getElementById('pgDisc');
+    discEl.textContent = '-' + p.discount + '%';
+    discEl.style.display = 'block';
+  }
+
+  // Info
+  document.getElementById('piColor').textContent = p.color ? p.color.toUpperCase() : '';
+  document.getElementById('piName').textContent = p.title;
+
+  // Likes
+  if (p.likes > 0) {
+    document.getElementById('piLikes').innerHTML =
+      `<svg viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="0" width="14" height="14"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${p.likes} оценили`;
+  }
+
+  // Status
+  const statusEl = document.getElementById('piStatus');
+  statusEl.textContent = p.status ? 'В наличии' : 'Нет в наличии';
+  statusEl.className = 'pi-status-badge ' + (p.status ? 'in' : 'out');
+
+  // Price
+  const disc = p.discount > 0;
+  const final = disc ? Math.round(p.price * (1 - p.discount / 100)) : p.price;
+  document.getElementById('piPrice').innerHTML = disc
+    ? `<span class="pi-price-new">${final}</span><span class="pi-price-cur"> ${p.currency}</span><span class="pi-price-old"> ${p.price} ${p.currency}</span>`
+    : `<span class="pi-price-new">${p.price}</span><span class="pi-price-cur"> ${p.currency}</span>`;
+
+  // Sections
+  const sections = [];
+  if (p.desc)        sections.push({ label: 'Описание',  content: p.desc });
+  if (p.composition) sections.push({ label: 'Состав',    content: p.composition });
+  if (p.size)        sections.push({ label: 'Размер',    content: p.size });
+  if (p.color)       sections.push({ label: 'Цвет',      content: p.color });
+  sections.push({ label: 'Уход', content: 'Меняйте воду ежедневно, обрезайте стебли под углом 45°. Держите вдали от прямых солнечных лучей и источников тепла. При правильном уходе букет простоит 7–14 дней.' });
+
+  const list = document.getElementById('psList');
+  list.innerHTML = sections.map((s, i) => `
+    <div class="ps${i===0?' open':''}">
+      <button class="ps-btn" onclick="toggleSection(this)">
+        <span class="ps-btn-label">${s.label}</span>
+        <span class="ps-btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </span>
+      </button>
+      <div class="ps-body"><div class="ps-content">${esc(s.content).replace(/\n/g,'<br>')}</div></div>
+    </div>
+  `).join('');
+
+  // CTA bar
+  if (p.status) {
+    document.getElementById('pbCta').style.display = 'flex';
+  }
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Load ── */
+async function load() {
+  try {
+    const [meRes, prodRes] = await Promise.all([
+      fetch('/api/me', { credentials: 'same-origin' }),
+      fetch('/api/products/' + productId)
+    ]);
+    const me = await meRes.json();
+    _prodLoggedIn = !!me.loggedIn;
+
+    if (!prodRes.ok) throw new Error('not found');
+    const p = await prodRes.json();
+    render(p);
+
+    // Set heart state after render
+    if (p.status) {
+      if (_prodLoggedIn) {
+        try {
+          const favRes = await fetch('/api/favorites', { credentials: 'same-origin' });
+          const favData = await favRes.json();
+          syncHeart((favData.ids || []).includes(p.id));
+        } catch { syncHeart(false); }
+      } else {
+        syncHeart(lsFavs().has(p.id));
+      }
+    }
+  } catch {
+    document.getElementById('piName').textContent = 'Товар не найден';
+    document.getElementById('piName').style.color = '#bbb';
+  }
+}
+
+load();
+</script>
+</body>
+</html>
